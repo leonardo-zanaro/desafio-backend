@@ -1,0 +1,46 @@
+﻿version: '1.0'
+
+networks:
+  dockerapi-dev:
+    driver: bridge
+    
+services:
+  api:
+    image: api-rental:latest
+    depends_on: 
+      - "postgres_image"
+      - "rabbit_mq_image"
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+    environment:
+      DB_CONNECTION_STRING: "host=postgres_image;port=5432;database=postgres;User ID=admti;password=ABcX6ZfjT9p4qrS7vgNhM2sPD8xLR5JEF3QT"
+    networks: 
+      - dockerapi-dev
+        
+  postgres_image:
+    image: postgres:latest
+    ports:
+      - 5432:5432
+    restart: always
+    volumes:
+      - db_volume:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: "admti"
+      POSTGRES_PASSWORD: "ABcX6ZfjT9p4qrS7vgNhM2sPD8xLR5JEF3QT"
+      POSTGRES_DB: "postgres"
+    networks: 
+      - dockerapi-dev
+        
+  rabbit_mq_image:
+    image: "rabbitmq:latest"
+    ports:
+      - 15672:15672
+    restart: always
+    networks: 
+      - dockerapi-dev
+volumes:
+  db_volume:
