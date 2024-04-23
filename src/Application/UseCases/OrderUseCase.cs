@@ -21,7 +21,7 @@ public class OrderUseCase : IOrderUseCase
         _notificationRepository = notificationRepository;
     }
 
-    public bool CreateOrder(decimal price)
+    public Order? CreateOrder(decimal price)
     {
         try
         {
@@ -65,11 +65,11 @@ public class OrderUseCase : IOrderUseCase
                 }
             }
 
-            return true;
+            return order;
         }
         catch (Exception)
         {
-            return false;
+            return null;
         }
     }
 

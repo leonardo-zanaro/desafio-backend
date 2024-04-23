@@ -83,7 +83,6 @@ builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IRentalPeriodRepository, RentalPeriodRepository>();
 builder.Services.AddScoped<IRentalRepository, RentalRepository>();
-
 builder.Services.AddScoped<IDelivererUseCase, DelivererUseCase>();
 builder.Services.AddScoped<IMotorcycleUseCase, MotorcycleUseCase>();
 builder.Services.AddScoped<INotificationUseCase, NotificationUseCase>();

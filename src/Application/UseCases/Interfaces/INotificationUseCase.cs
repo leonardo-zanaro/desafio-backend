@@ -4,5 +4,6 @@ namespace Application.UseCases.Interfaces;
 
 public interface INotificationUseCase
 {
-    void ConsumeNotifications();
+    IEnumerable<Notification> GetNotificationByOrder(Guid orderId);
+    Task ConsumeNotifications();
 }

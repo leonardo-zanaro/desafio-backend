@@ -6,15 +6,19 @@ using Application.ViewModel;
 using RabbitMQ.Client.Events;
 using Infra.Repositories.Interfaces;
 using Application.UseCases.Interfaces;
+using Infra.Context;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Application.UseCases;
 
 public class NotificationUseCase : INotificationUseCase
 {
     private readonly INotificationRepository _notificationRepository;
-    public NotificationUseCase(INotificationRepository notificationRepository)
+    private readonly IServiceProvider _serviceProvider;
+    public NotificationUseCase(INotificationRepository notificationRepository, IServiceProvider serviceProvider)
     {
         _notificationRepository = notificationRepository;
+        _serviceProvider = serviceProvider;
     }
 
     public IEnumerable<Notification> GetNotificationByOrder(Guid orderId)
@@ -22,7 +26,7 @@ public class NotificationUseCase : INotificationUseCase
         return _notificationRepository.GetByOrderId(orderId);
     }
     
-    public void ConsumeNotifications()
+    public async Task ConsumeNotifications()
     {
         var factory = new ConnectionFactory { HostName = "localhost" };
         using var connection = factory.CreateConnection();
@@ -35,21 +39,37 @@ public class NotificationUseCase : INotificationUseCase
             arguments: null);
 
         var consumer = new EventingBasicConsumer(channel);
-        consumer.Received += (model, ea) =>
+        consumer.Received += async (model, ea) =>
         {
-            var body = ea.Body.ToArray();
-            var message = Encoding.UTF8.GetString(body);
-            var eventMessage = JsonConvert.DeserializeObject<OrderNotificationMessage>(message);
-            
-            if(eventMessage != null)
-                StoreNotification(eventMessage);
+            try
+            {
+                var body = ea.Body.ToArray();
+                var message = Encoding.UTF8.GetString(body);
+                var eventMessage = JsonConvert.DeserializeObject<OrderNotificationMessage>(message);
+
+                if (eventMessage != null)
+                {
+                    using (var scope = _serviceProvider.CreateScope())
+                    {
+                        var context = scope.ServiceProvider.GetRequiredService<DmContext>();
+                        var notification = StoreNotification(eventMessage);
+                        context.Notifications.Add(notification);
+                        await context.SaveChangesAsync();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erro ao processar mensagem: {ex.Message}");
+            }
         };
-        channel.BasicConsume(queue: "notification_queue",
-            autoAck: true,
-            consumer: consumer);
+    
+        channel.BasicConsume(queue: "notification_queue", autoAck: true, consumer: consumer);
+
+        await Task.Delay(Timeout.Infinite);
     }
 
-    private void StoreNotification(OrderNotificationMessage message)
+    private Notification StoreNotification(OrderNotificationMessage message)
     {
         var notification = Notification.Create();
 
@@ -57,6 +77,6 @@ public class NotificationUseCase : INotificationUseCase
             .SetDelivererId(message.DelivererId)
             .SetOrderId(message.OrderId);
 
-        _notificationRepository.Add(notification);
+       return notification;
     }
 }

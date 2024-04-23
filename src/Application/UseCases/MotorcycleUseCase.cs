@@ -68,17 +68,29 @@ public class MotorcycleUseCase : IMotorcycleUseCase
     /// <returns>True if the license plate was successfully changed, false otherwise.</returns>
     public bool ChangePlate(Guid motorcycleId, string plate)
     {
-        var motorcycle = _motorcycleRepository.GetById(motorcycleId);
+        try
+        {
+            var motorcycle = _motorcycleRepository.GetById(motorcycleId);
 
-        if (motorcycle == null)
+            if (motorcycle == null)
+                throw new Exception("Motorcycle not found");
+
+            var motorcycleByLicensePlate = _motorcycleRepository.GetByPlate(plate);
+
+            if (motorcycleByLicensePlate != null)
+                throw new Exception("License plate in use");
+                        
+            motorcycle
+                .SetLicensePlate(plate);
+
+            var success =_motorcycleRepository.Update(motorcycle);
+
+            return success;
+        }
+        catch (Exception)
+        {
             return false;
-
-        motorcycle
-            .SetLicensePlate(plate);
-
-        var success =_motorcycleRepository.Update(motorcycle);
-
-        return success;
+        }
     }
     public Motorcycle? BringAvailable(Guid motorcycleId)
     {

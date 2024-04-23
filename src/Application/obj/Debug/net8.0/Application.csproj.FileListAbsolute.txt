@@ -20,6 +20,11 @@ C:\Users\leona\RiderProjects\DesafioBackEnd\src\Application\bin\Debug\net8.0\App
 C:\Users\leona\RiderProjects\DesafioBackEnd\src\Application\bin\Debug\net8.0\Application.pdb
 C:\Users\leona\RiderProjects\DesafioBackEnd\src\Application\bin\Debug\net8.0\Domain.dll
 C:\Users\leona\RiderProjects\DesafioBackEnd\src\Application\bin\Debug\net8.0\Infra.dll
+C:\Users\leona\RiderProjects\DesafioBackEnd\src\Application\bin\Debug\net8.0\Microsoft.AspNetCore.Http.Features.dll
+C:\Users\leona\RiderProjects\DesafioBackEnd\src\Application\bin\Debug\net8.0\Microsoft.Net.Http.Headers.dll
+C:\Users\leona\RiderProjects\DesafioBackEnd\src\Application\bin\Debug\net8.0\System.IO.Pipelines.dll
+C:\Users\leona\RiderProjects\DesafioBackEnd\src\Application\bin\Debug\net8.0\Microsoft.AspNetCore.Connections.Abstractions.dll
+C:\Users\leona\RiderProjects\DesafioBackEnd\src\Application\bin\Debug\net8.0\Microsoft.Extensions.Features.dll
 C:\Users\leona\RiderProjects\DesafioBackEnd\src\Application\bin\Debug\net8.0\Infra.pdb
 C:\Users\leona\RiderProjects\DesafioBackEnd\src\Application\bin\Debug\net8.0\Domain.pdb
 C:\Users\leona\RiderProjects\DesafioBackEnd\src\Application\obj\Debug\net8.0\Application.csproj.AssemblyReference.cache
@@ -32,8 +37,3 @@ C:\Users\leona\RiderProjects\DesafioBackEnd\src\Application\obj\Debug\net8.0\App
 C:\Users\leona\RiderProjects\DesafioBackEnd\src\Application\obj\Debug\net8.0\refint\Application.dll
 C:\Users\leona\RiderProjects\DesafioBackEnd\src\Application\obj\Debug\net8.0\Application.pdb
 C:\Users\leona\RiderProjects\DesafioBackEnd\src\Application\obj\Debug\net8.0\ref\Application.dll
-C:\Users\leona\RiderProjects\DesafioBackEnd\src\Application\bin\Debug\net8.0\Microsoft.AspNetCore.Http.Features.dll
-C:\Users\leona\RiderProjects\DesafioBackEnd\src\Application\bin\Debug\net8.0\Microsoft.Net.Http.Headers.dll
-C:\Users\leona\RiderProjects\DesafioBackEnd\src\Application\bin\Debug\net8.0\System.IO.Pipelines.dll
-C:\Users\leona\RiderProjects\DesafioBackEnd\src\Application\bin\Debug\net8.0\Microsoft.AspNetCore.Connections.Abstractions.dll
-C:\Users\leona\RiderProjects\DesafioBackEnd\src\Application\bin\Debug\net8.0\Microsoft.Extensions.Features.dll

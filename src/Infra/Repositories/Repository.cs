@@ -5,9 +5,9 @@ namespace Infra.Repositories;
 
 public abstract class Repository<T> where T : BaseEntity
 {
-    protected readonly DmContext _context;
+    public readonly DmContext _context;
 
-    protected Repository(DmContext context)
+    public Repository(DmContext context)
     {
         _context = context;
     }
@@ -38,6 +38,11 @@ public abstract class Repository<T> where T : BaseEntity
             return false;
         }
     }
+    public Task<int> AddAsync(T entity) {
+        _context.Set<T>().AddAsync(entity);
+        return _context.SaveChangesAsync();
+    }
+    
     public bool AddRange(IEnumerable<T> entities)
     {
         try

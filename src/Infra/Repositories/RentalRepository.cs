@@ -12,10 +12,10 @@ public class RentalRepository : Repository<Rental>, IRentalRepository
 
     public Rental? RentalByMotorcycleId(Guid motorcycleId)
     {
-        var rental = _context.Rentals.FirstOrDefault(x =>
+        var rental = _context.Rentals.Where(x =>
             !x.Excluded
             && x.MotorcycleId == motorcycleId
-            && x.EndDate == null);
+            && x.EndDate == null).OrderByDescending(o => o.StartDate).FirstOrDefault();
 
         return rental;
     }

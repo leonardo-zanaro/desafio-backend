@@ -1,5 +1,4 @@
 using Application.DTOs;
-using Moq;
 using Domain.Entities;
 using Infra.Repositories.Interfaces;
 using Application.UseCases.Interfaces;
@@ -23,6 +22,8 @@ public class MotorcycleUseCaseTests
             .Options;
         
         _context = new DmContext(options);
+        _context.Database.EnsureDeleted();
+        _context.Database.EnsureCreated();
         _motorcycleRepository = new MotorcycleRepository(_context);
         _useCase = new MotorcycleUseCase(_motorcycleRepository);
 
@@ -41,11 +42,13 @@ public class MotorcycleUseCaseTests
 
         var createdMotorcycle = _useCase.CreateMotorcycle(newMotorcycle);
 
+        Assert.NotNull(createdMotorcycle);
         var motorcycle = _useCase.GetById(createdMotorcycle.Id);
-        
-        Assert.AreEqual(newMotorcycle.Model, motorcycle.Model);
-        Assert.AreEqual(newMotorcycle.Year, motorcycle.Year);
-        Assert.AreEqual(newMotorcycle.LicensePlate, motorcycle.LicensePlate);
+    
+        Assert.NotNull(motorcycle);
+        Assert.That(motorcycle.Model, Is.EqualTo(newMotorcycle.Model));
+        Assert.That(motorcycle.Year, Is.EqualTo(newMotorcycle.Year));
+        Assert.That(motorcycle.LicensePlate, Is.EqualTo(newMotorcycle.LicensePlate));
     }
     
     [Test]
@@ -53,120 +56,89 @@ public class MotorcycleUseCaseTests
     {
         var newMotorcycle = new MotorcycleDto()
         {
-            Year = "1969",
-            LicensePlate = "ABC2345"
+            Model = "Honda CB750",
+            Year = "1969"
         };
 
         var createdMotorcycle = _useCase.CreateMotorcycle(newMotorcycle);
 
         Assert.Null(createdMotorcycle);
     }
-    //
-    // [Test]
-    // public void ChangeLicensePlate_ReturnsTrue_WhenMotorcycleExisting()
-    // {
-    //     var plate = "ABC123";
-    //
-    //     var motorcycle = Motorcycle.Create();
-    //
-    //     motorcycle
-    //         .SetLicensePlate("123456")
-    //         .SetModel("Honda CB750")
-    //         .SetYear("1969");
-    //     
-    //     _motorcycleRepository.Setup(r => r.GetById(motorcycle.Id))
-    //         .Returns(motorcycle);
-    //     _motorcycleRepository.Setup(r => r.Update(motorcycle))
-    //         .Returns(true);
-    //
-    //     var result = _useCase.ChangePlate(motorcycle.Id, plate);
-    //
-    //     Assert.True(result);
-    // }
-    //
-    // [Test]
-    // public void ChangeLicensePlate_ReturnsFalse_WhenMotorcycleNotExisting()
-    // {
-    //     var id = Guid.NewGuid();
-    //     var plate = "ABC123";
-    //     
-    //     _motorcycleRepository.Setup(r => r.GetById(id))
-    //         .Returns((Motorcycle?)null);
-    //
-    //     var result = _useCase.ChangePlate(id, plate);
-    //
-    //     Assert.False(result);
-    // }
-    //
-    // [Test]
-    // public void GetByPlate_ReturnsMotorcycle_WhenMotorcycleExisting()
-    // {
-    //     var plate = "ABC1234";
-    //
-    //     var motorcycle = Motorcycle.Create();
-    //
-    //     motorcycle
-    //         .SetLicensePlate(plate)
-    //         .SetModel("Honda CB750")
-    //         .SetYear("1969");
-    //
-    //     _motorcycleRepository.Setup(r => r.GetByPlate(plate)).Returns(motorcycle);
-    //
-    //     var result = _useCase.GetByPlate(plate);
-    //
-    //     Assert.NotNull(result);
-    //     Assert.That(result!.LicensePlate, Is.EqualTo(plate));
-    // }
-    //
-    // [Test]
-    // public void GetByPlate_ReturnsNull_WhenPlateNotFound()
-    // {
-    //     var plate = "ABC1234";
-    //
-    //     var motorcycle = Motorcycle.Create();
-    //
-    //     motorcycle
-    //         .SetLicensePlate(plate)
-    //         .SetModel("Honda CB750")
-    //         .SetYear("1969");
-    //
-    //     _motorcycleRepository.Setup(r => r.GetByPlate(plate)).Returns(motorcycle);
-    //
-    //     var result = _useCase.GetByPlate("XPT1234");
-    //
-    //     Assert.Null(result);
-    //     Assert.That(result!.LicensePlate, Is.Not.EqualTo(plate));
-    // }
-    //
-    // [Test]
-    // public void RemoveMotorcycle_ReturnsTrue_WhenMotorcycleExisting()
-    // {
-    //     var motorcycle = Motorcycle.Create();
-    //
-    //     motorcycle
-    //         .SetLicensePlate("123456")
-    //         .SetModel("Honda CB750")
-    //         .SetYear("1969");
-    //     
-    //     _motorcycleRepository.Setup(r => r.GetById(motorcycle.Id))
-    //         .Returns(motorcycle);
-    //     
-    //     var result = _useCase.RemoveMotorcycle(motorcycle.Id);
-    //
-    //     Assert.True(result);
-    // }
+
+    [Test]
+    public void GetAllMotorcycle_ReturnsListMotorcycle_WhenExcludedIsFalse()
+    {
+        var motorcycles =_useCase.GetAll();
+        
+        Assert.IsInstanceOf<IEnumerable<Motorcycle>>(motorcycles);
+    }
     
+    [Test]
+    public void GetMotorcycleByLicensePlate_ReturnsMotorcycle_WhenMotorcycleFound()
+    {
+        var licensePlate = "ABC1234";
+
+        var motorcycle = _useCase.GetByPlate(licensePlate);
+        
+        Assert.IsNotNull(motorcycle);
+        Assert.That(licensePlate, Is.EqualTo(motorcycle.LicensePlate));
+        Assert.IsInstanceOf<Motorcycle>(motorcycle);
+    }
+    
+    [Test]
+    public void GetMotorcycleByLicensePlate_ReturnsNull_WhenMotorcycleNotFound()
+    {
+        var licensePlate = "XXXYYYZZZ";
+
+        var motorcycle = _useCase.GetByPlate(licensePlate);
+        
+        Assert.IsNull(motorcycle);
+    }
+    
+    [Test]
+    public void UpdateLicensePlate_ReturnsFalse_WhenLicensePlateInUse()
+    {
+        var newLicensePlate = "XYZ1234";
+        
+        var motorcycle = _useCase.GetAll().First();
+
+        var success =_useCase.ChangePlate(motorcycle.Id, newLicensePlate);
+        
+        Assert.IsFalse(success);
+    }
+    
+    [Test]
+    public void UpdateLicensePlate_ReturnsTrue_WhenSuccess()
+    {
+        var newLicensePlate = "BZX9999";
+        
+        var motorcycle = _useCase.GetAll().First();
+
+        var success =_useCase.ChangePlate(motorcycle.Id, newLicensePlate);
+        
+        Assert.IsTrue(success);
+    }
+     
     private void AddRandomMotorcycles(int count = 100)
     {
         #region Add Default Motorcycle
-        var motorcyle = Motorcycle.Create();
+        var motorcyle1 = Motorcycle.Create();
 
-        motorcyle
+        motorcyle1
             .SetLicensePlate("ABC1234")
             .SetModel("Honda CB750")
             .SetYear("1969");
 
-        _context.Add(motorcyle);
+        _context.Add(motorcyle1);
+        
+        var motorcyle2 = Motorcycle.Create();
+
+        motorcyle2
+            .SetLicensePlate("XYZ1234")
+            .SetModel("Honda CB750")
+            .SetYear("1970");
+
+        _context.Add(motorcyle2);
         #endregion
         
         var models = new [] 
@@ -188,7 +160,9 @@ public class MotorcycleUseCaseTests
         for (int i = 0; i < count; i++)
         {
             var motorcycle = Motorcycle.Create();
-
+            
+            motorcycle.Excluded = (i % 3 == 0);
+            
             motorcycle
                 .SetLicensePlate("XYZ" + rand.Next(1000, 9999))
                 .SetModel(models[rand.Next(models.Length)])

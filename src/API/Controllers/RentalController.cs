@@ -70,6 +70,8 @@ public class RentalController : MainController
 
             var success = _rentalUseCase.RentActive(motorcycleId);
             if (!success) throw new Exception("An unexpected error has occurred");
+
+            _rentalUseCase.ReturnMotorcycle(motorcycleId);
             
             return Ok("Motorcycle returned successfully");
         }

@@ -29,6 +29,11 @@ public class RentalUseCase : IRentalUseCase
     {
         try
         {
+            var oldRental = _rentalRepository.RentalByMotorcycleId(motorcycleId);
+
+            if (oldRental != null && oldRental.StartDate >= DateTime.Today)
+                return false;
+            
             var period = _rentalPeriodRepository.GetById(rentalPeriodId);
 
             if (period == null)

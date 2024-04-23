@@ -119,8 +119,9 @@ C:\Users\leona\RiderProjects\DesafioBackEnd\API\obj\Debug\net8.0\API.xml
 C:\Users\leona\RiderProjects\DesafioBackEnd\API\obj\Debug\net8.0\API.pdb
 C:\Users\leona\RiderProjects\DesafioBackEnd\API\obj\Debug\net8.0\API.genruntimeconfig.cache
 C:\Users\leona\RiderProjects\DesafioBackEnd\API\obj\Debug\net8.0\ref\API.dll
-C:\Users\leona\RiderProjects\DesafioBackEnd\src\API\bin\Debug\net8.0\API.exe
 C:\Users\leona\RiderProjects\DesafioBackEnd\src\API\bin\Debug\net8.0\appsettings.json
+C:\Users\leona\RiderProjects\DesafioBackEnd\src\API\bin\Debug\net8.0\API.staticwebassets.runtime.json
+C:\Users\leona\RiderProjects\DesafioBackEnd\src\API\bin\Debug\net8.0\API.exe
 C:\Users\leona\RiderProjects\DesafioBackEnd\src\API\bin\Debug\net8.0\API.deps.json
 C:\Users\leona\RiderProjects\DesafioBackEnd\src\API\bin\Debug\net8.0\API.runtimeconfig.json
 C:\Users\leona\RiderProjects\DesafioBackEnd\src\API\bin\Debug\net8.0\API.dll
@@ -233,14 +234,6 @@ C:\Users\leona\RiderProjects\DesafioBackEnd\src\API\obj\Debug\net8.0\API.Generat
 C:\Users\leona\RiderProjects\DesafioBackEnd\src\API\obj\Debug\net8.0\API.AssemblyInfoInputs.cache
 C:\Users\leona\RiderProjects\DesafioBackEnd\src\API\obj\Debug\net8.0\API.AssemblyInfo.cs
 C:\Users\leona\RiderProjects\DesafioBackEnd\src\API\obj\Debug\net8.0\API.csproj.CoreCompileInputs.cache
-C:\Users\leona\RiderProjects\DesafioBackEnd\src\API\obj\Debug\net8.0\API.csproj.CopyComplete
-C:\Users\leona\RiderProjects\DesafioBackEnd\src\API\obj\Debug\net8.0\API.dll
-C:\Users\leona\RiderProjects\DesafioBackEnd\src\API\obj\Debug\net8.0\refint\API.dll
-C:\Users\leona\RiderProjects\DesafioBackEnd\src\API\obj\Debug\net8.0\API.xml
-C:\Users\leona\RiderProjects\DesafioBackEnd\src\API\obj\Debug\net8.0\API.pdb
-C:\Users\leona\RiderProjects\DesafioBackEnd\src\API\obj\Debug\net8.0\API.genruntimeconfig.cache
-C:\Users\leona\RiderProjects\DesafioBackEnd\src\API\obj\Debug\net8.0\ref\API.dll
-C:\Users\leona\RiderProjects\DesafioBackEnd\src\API\bin\Debug\net8.0\API.staticwebassets.runtime.json
 C:\Users\leona\RiderProjects\DesafioBackEnd\src\API\obj\Debug\net8.0\API.MvcApplicationPartsAssemblyInfo.cs
 C:\Users\leona\RiderProjects\DesafioBackEnd\src\API\obj\Debug\net8.0\API.MvcApplicationPartsAssemblyInfo.cache
 C:\Users\leona\RiderProjects\DesafioBackEnd\src\API\obj\Debug\net8.0\staticwebassets.build.json
@@ -251,3 +244,10 @@ C:\Users\leona\RiderProjects\DesafioBackEnd\src\API\obj\Debug\net8.0\staticwebas
 C:\Users\leona\RiderProjects\DesafioBackEnd\src\API\obj\Debug\net8.0\staticwebassets\msbuild.buildTransitive.API.props
 C:\Users\leona\RiderProjects\DesafioBackEnd\src\API\obj\Debug\net8.0\staticwebassets.pack.json
 C:\Users\leona\RiderProjects\DesafioBackEnd\src\API\obj\Debug\net8.0\scopedcss\bundle\API.styles.css
+C:\Users\leona\RiderProjects\DesafioBackEnd\src\API\obj\Debug\net8.0\API.csproj.CopyComplete
+C:\Users\leona\RiderProjects\DesafioBackEnd\src\API\obj\Debug\net8.0\API.dll
+C:\Users\leona\RiderProjects\DesafioBackEnd\src\API\obj\Debug\net8.0\refint\API.dll
+C:\Users\leona\RiderProjects\DesafioBackEnd\src\API\obj\Debug\net8.0\API.xml
+C:\Users\leona\RiderProjects\DesafioBackEnd\src\API\obj\Debug\net8.0\API.pdb
+C:\Users\leona\RiderProjects\DesafioBackEnd\src\API\obj\Debug\net8.0\API.genruntimeconfig.cache
+C:\Users\leona\RiderProjects\DesafioBackEnd\src\API\obj\Debug\net8.0\ref\API.dll
