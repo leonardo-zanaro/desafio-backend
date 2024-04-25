@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "lRDOdCj5X5RPQADzk/Tw1kiJovLn0iCBDOiqPbEMUZkj70YqL9+R7158XWe4SAgSzl6nWj8zelddzX1o861+iw==",
+  "dgSpecHash": "yLMY+2RaKByohlDvH52S48P7thOX78maVqQh3LEg6PZ7R+V/8NLDvXyiljHAYbUOBVMxAQ5vUA1g/2k0Yh1UTQ==",
   "success": true,
-  "projectFilePath": "C:\\Users\\leona\\RiderProjects\\DesafioBackEnd\\src\\Infra\\Infra.csproj",
+  "projectFilePath": "C:\\GitKraken\\desafio-backend\\src\\Infra\\Infra.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\leona\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\leona\\.nuget\\packages\\microsoft.aspnetcore.cryptography.internal\\8.0.3\\microsoft.aspnetcore.cryptography.internal.8.0.3.nupkg.sha512",

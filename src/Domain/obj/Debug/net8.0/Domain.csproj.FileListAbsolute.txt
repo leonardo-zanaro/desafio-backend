@@ -22,3 +22,16 @@ C:\Users\leona\RiderProjects\DesafioBackEnd\src\Domain\obj\Debug\net8.0\Domain.d
 C:\Users\leona\RiderProjects\DesafioBackEnd\src\Domain\obj\Debug\net8.0\refint\Domain.dll
 C:\Users\leona\RiderProjects\DesafioBackEnd\src\Domain\obj\Debug\net8.0\Domain.pdb
 C:\Users\leona\RiderProjects\DesafioBackEnd\src\Domain\obj\Debug\net8.0\ref\Domain.dll
+C:\GitKraken\desafio-backend\src\Domain\bin\Debug\net8.0\Domain.deps.json
+C:\GitKraken\desafio-backend\src\Domain\bin\Debug\net8.0\Domain.dll
+C:\GitKraken\desafio-backend\src\Domain\bin\Debug\net8.0\Domain.pdb
+C:\GitKraken\desafio-backend\src\Domain\obj\Debug\net8.0\Domain.csproj.AssemblyReference.cache
+C:\GitKraken\desafio-backend\src\Domain\obj\Debug\net8.0\Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\GitKraken\desafio-backend\src\Domain\obj\Debug\net8.0\Domain.AssemblyInfoInputs.cache
+C:\GitKraken\desafio-backend\src\Domain\obj\Debug\net8.0\Domain.AssemblyInfo.cs
+C:\GitKraken\desafio-backend\src\Domain\obj\Debug\net8.0\Domain.csproj.CoreCompileInputs.cache
+C:\GitKraken\desafio-backend\src\Domain\obj\Debug\net8.0\Domain.sourcelink.json
+C:\GitKraken\desafio-backend\src\Domain\obj\Debug\net8.0\Domain.dll
+C:\GitKraken\desafio-backend\src\Domain\obj\Debug\net8.0\refint\Domain.dll
+C:\GitKraken\desafio-backend\src\Domain\obj\Debug\net8.0\Domain.pdb
+C:\GitKraken\desafio-backend\src\Domain\obj\Debug\net8.0\ref\Domain.dll

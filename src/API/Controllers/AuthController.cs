@@ -140,11 +140,8 @@ public class AuthController : MainController
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
         DateTime currentTimeUTC = DateTime.UtcNow;
-
-        TimeZoneInfo timeZoneBrasilia = TimeZoneInfo.FindSystemTimeZoneById("E. South America Standard Time");
-        DateTime hourBrasilia = TimeZoneInfo.ConvertTimeFromUtc(currentTimeUTC, timeZoneBrasilia);
         
-        var expiration = hourBrasilia.AddHours(4);
+        var expiration = currentTimeUTC.AddHours(8);
 
         var claimsUser = await GenerateClaims(user);
 

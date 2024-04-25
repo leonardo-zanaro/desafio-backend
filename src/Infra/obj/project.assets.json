@@ -2460,11 +2460,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\leona\\RiderProjects\\DesafioBackEnd\\src\\Infra\\Infra.csproj",
+      "projectUniqueName": "C:\\GitKraken\\desafio-backend\\src\\Infra\\Infra.csproj",
       "projectName": "Infra",
-      "projectPath": "C:\\Users\\leona\\RiderProjects\\DesafioBackEnd\\src\\Infra\\Infra.csproj",
+      "projectPath": "C:\\GitKraken\\desafio-backend\\src\\Infra\\Infra.csproj",
       "packagesPath": "C:\\Users\\leona\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\leona\\RiderProjects\\DesafioBackEnd\\src\\Infra\\obj\\",
+      "outputPath": "C:\\GitKraken\\desafio-backend\\src\\Infra\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\leona\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -2479,8 +2479,8 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "C:\\Users\\leona\\RiderProjects\\DesafioBackEnd\\src\\Domain\\Domain.csproj": {
-              "projectPath": "C:\\Users\\leona\\RiderProjects\\DesafioBackEnd\\src\\Domain\\Domain.csproj"
+            "C:\\GitKraken\\desafio-backend\\src\\Domain\\Domain.csproj": {
+              "projectPath": "C:\\GitKraken\\desafio-backend\\src\\Domain\\Domain.csproj"
             }
           }
         }

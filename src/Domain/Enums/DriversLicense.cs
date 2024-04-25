@@ -9,7 +9,5 @@ public enum DriversLicense
     [Description("B")]
     Car = 1,
     [Description("A + B")]
-    MotorcycleCar = 2,
-    [Description("None")]
-    None = 99,
+    MotorcycleCar = 2
 }

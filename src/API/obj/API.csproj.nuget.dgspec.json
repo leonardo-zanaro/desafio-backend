@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\leona\\RiderProjects\\DesafioBackEnd\\src\\API\\API.csproj": {}
+    "C:\\GitKraken\\desafio-backend\\src\\API\\API.csproj": {}
   },
   "projects": {
-    "C:\\Users\\leona\\RiderProjects\\DesafioBackEnd\\src\\API\\API.csproj": {
+    "C:\\GitKraken\\desafio-backend\\src\\API\\API.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\leona\\RiderProjects\\DesafioBackEnd\\src\\API\\API.csproj",
+        "projectUniqueName": "C:\\GitKraken\\desafio-backend\\src\\API\\API.csproj",
         "projectName": "API",
-        "projectPath": "C:\\Users\\leona\\RiderProjects\\DesafioBackEnd\\src\\API\\API.csproj",
+        "projectPath": "C:\\GitKraken\\desafio-backend\\src\\API\\API.csproj",
         "packagesPath": "C:\\Users\\leona\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\leona\\RiderProjects\\DesafioBackEnd\\src\\API\\obj\\",
+        "outputPath": "C:\\GitKraken\\desafio-backend\\src\\API\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\leona\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -26,11 +26,11 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\leona\\RiderProjects\\DesafioBackEnd\\src\\Application\\Application.csproj": {
-                "projectPath": "C:\\Users\\leona\\RiderProjects\\DesafioBackEnd\\src\\Application\\Application.csproj"
+              "C:\\GitKraken\\desafio-backend\\src\\Application\\Application.csproj": {
+                "projectPath": "C:\\GitKraken\\desafio-backend\\src\\Application\\Application.csproj"
               },
-              "C:\\Users\\leona\\RiderProjects\\DesafioBackEnd\\src\\Infra\\Infra.csproj": {
-                "projectPath": "C:\\Users\\leona\\RiderProjects\\DesafioBackEnd\\src\\Infra\\Infra.csproj"
+              "C:\\GitKraken\\desafio-backend\\src\\Infra\\Infra.csproj": {
+                "projectPath": "C:\\GitKraken\\desafio-backend\\src\\Infra\\Infra.csproj"
               }
             }
           }
@@ -107,14 +107,14 @@
         }
       }
     },
-    "C:\\Users\\leona\\RiderProjects\\DesafioBackEnd\\src\\Application\\Application.csproj": {
+    "C:\\GitKraken\\desafio-backend\\src\\Application\\Application.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\leona\\RiderProjects\\DesafioBackEnd\\src\\Application\\Application.csproj",
+        "projectUniqueName": "C:\\GitKraken\\desafio-backend\\src\\Application\\Application.csproj",
         "projectName": "Application",
-        "projectPath": "C:\\Users\\leona\\RiderProjects\\DesafioBackEnd\\src\\Application\\Application.csproj",
+        "projectPath": "C:\\GitKraken\\desafio-backend\\src\\Application\\Application.csproj",
         "packagesPath": "C:\\Users\\leona\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\leona\\RiderProjects\\DesafioBackEnd\\src\\Application\\obj\\",
+        "outputPath": "C:\\GitKraken\\desafio-backend\\src\\Application\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\leona\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -129,8 +129,8 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\leona\\RiderProjects\\DesafioBackEnd\\src\\Infra\\Infra.csproj": {
-                "projectPath": "C:\\Users\\leona\\RiderProjects\\DesafioBackEnd\\src\\Infra\\Infra.csproj"
+              "C:\\GitKraken\\desafio-backend\\src\\Infra\\Infra.csproj": {
+                "projectPath": "C:\\GitKraken\\desafio-backend\\src\\Infra\\Infra.csproj"
               }
             }
           }
@@ -145,6 +145,10 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
+            "Microsoft.AspNetCore.Http.Features": {
+              "target": "Package",
+              "version": "[5.0.17, )"
+            },
             "Newtonsoft.Json": {
               "target": "Package",
               "version": "[13.0.3, )"
@@ -174,14 +178,14 @@
         }
       }
     },
-    "C:\\Users\\leona\\RiderProjects\\DesafioBackEnd\\src\\Domain\\Domain.csproj": {
+    "C:\\GitKraken\\desafio-backend\\src\\Domain\\Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\leona\\RiderProjects\\DesafioBackEnd\\src\\Domain\\Domain.csproj",
+        "projectUniqueName": "C:\\GitKraken\\desafio-backend\\src\\Domain\\Domain.csproj",
         "projectName": "Domain",
-        "projectPath": "C:\\Users\\leona\\RiderProjects\\DesafioBackEnd\\src\\Domain\\Domain.csproj",
+        "projectPath": "C:\\GitKraken\\desafio-backend\\src\\Domain\\Domain.csproj",
         "packagesPath": "C:\\Users\\leona\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\leona\\RiderProjects\\DesafioBackEnd\\src\\Domain\\obj\\",
+        "outputPath": "C:\\GitKraken\\desafio-backend\\src\\Domain\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\leona\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -233,14 +237,14 @@
         }
       }
     },
-    "C:\\Users\\leona\\RiderProjects\\DesafioBackEnd\\src\\Infra\\Infra.csproj": {
+    "C:\\GitKraken\\desafio-backend\\src\\Infra\\Infra.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\leona\\RiderProjects\\DesafioBackEnd\\src\\Infra\\Infra.csproj",
+        "projectUniqueName": "C:\\GitKraken\\desafio-backend\\src\\Infra\\Infra.csproj",
         "projectName": "Infra",
-        "projectPath": "C:\\Users\\leona\\RiderProjects\\DesafioBackEnd\\src\\Infra\\Infra.csproj",
+        "projectPath": "C:\\GitKraken\\desafio-backend\\src\\Infra\\Infra.csproj",
         "packagesPath": "C:\\Users\\leona\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\leona\\RiderProjects\\DesafioBackEnd\\src\\Infra\\obj\\",
+        "outputPath": "C:\\GitKraken\\desafio-backend\\src\\Infra\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\leona\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -255,8 +259,8 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\leona\\RiderProjects\\DesafioBackEnd\\src\\Domain\\Domain.csproj": {
-                "projectPath": "C:\\Users\\leona\\RiderProjects\\DesafioBackEnd\\src\\Domain\\Domain.csproj"
+              "C:\\GitKraken\\desafio-backend\\src\\Domain\\Domain.csproj": {
+                "projectPath": "C:\\GitKraken\\desafio-backend\\src\\Domain\\Domain.csproj"
               }
             }
           }
