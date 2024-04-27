@@ -1,6 +1,5 @@
 using Application.DTOs;
 using Application.ViewModel;
-using Domain.Entities;
 
 namespace Application.UseCases.Interfaces;
 

@@ -148,7 +148,7 @@ public class RentalUseCase : IRentalUseCase
         var calculateDays = (DateTime.Today - rental.StartDate).Days;
         var daysRemaining = days - calculateDays;
 
-        decimal result = 0;
+        decimal result;
         
         if (daysRemaining > 0)
         {

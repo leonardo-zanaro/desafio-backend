@@ -1,9 +1,11 @@
 using Application.UseCases.Interfaces;
 using Domain.DTOs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
 
+[Authorize(Roles = "Admin")]
 [Microsoft.AspNetCore.Components.Route("api/[controller]")]
 public class RentalPeriodController : MainController
 {

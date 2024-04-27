@@ -24,8 +24,9 @@ public abstract class Repository<T> where T : BaseEntity
             
             return _context.Set<T>().Where(x => !x.Excluded);
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            _logger.Log(LogLevel.Critical, ex.Message);
             return Enumerable.Empty<T>();
         }
     } 
@@ -41,7 +42,7 @@ public abstract class Repository<T> where T : BaseEntity
         }
         catch (Exception ex)
         {
-            _logger.Log(LogLevel.Error, ex.Message);
+            _logger.Log(LogLevel.Critical, ex.Message);
             return false;
         }
     }
@@ -60,7 +61,7 @@ public abstract class Repository<T> where T : BaseEntity
         }
         catch (Exception ex)
         {
-            _logger.Log(LogLevel.Error, ex.Message);
+            _logger.Log(LogLevel.Critical, ex.Message);
             return false;
         }
     }
@@ -74,7 +75,7 @@ public abstract class Repository<T> where T : BaseEntity
         }
         catch (Exception ex)
         {
-            _logger.Log(LogLevel.Error, ex.Message);
+            _logger.Log(LogLevel.Critical, ex.Message);
             return false;
         }
     }
@@ -88,7 +89,7 @@ public abstract class Repository<T> where T : BaseEntity
         }
         catch (Exception ex)
         {
-            _logger.Log(LogLevel.Error, ex.Message);
+            _logger.Log(LogLevel.Critical, ex.Message);
             return false;
         }
     }

@@ -27,7 +27,7 @@ public class NotificationUseCase : INotificationUseCase
         _logger = logger;
     }
 
-    public IEnumerable<NotificationDTO> GetAllNotifications(int page, int pageQuantity)
+    public IEnumerable<NotificationDTO> GetAllNotifications(int? page = null, int? pageQuantity = null)
     {
         try
         {
@@ -92,19 +92,17 @@ public class NotificationUseCase : INotificationUseCase
 
                 if (eventMessage != null)
                 {
-                    using (var scope = _serviceProvider.CreateScope())
+                    using var scope = _serviceProvider.CreateScope();
+                    try
                     {
-                        try
-                        {
-                            var context = scope.ServiceProvider.GetRequiredService<DmContext>();
-                            var notification = StoreNotification(eventMessage);
-                            context.Notifications.Add(notification);
-                            await context.SaveChangesAsync();
-                        }
-                        catch (Exception ex)
-                        {
-                            _logger.Log(LogLevel.Error, ex.Message);
-                        }
+                        var context = scope.ServiceProvider.GetRequiredService<DmContext>();
+                        var notification = StoreNotification(eventMessage);
+                        context.Notifications.Add(notification);
+                        await context.SaveChangesAsync();
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.Log(LogLevel.Error, ex.Message);
                     }
                 }
             }

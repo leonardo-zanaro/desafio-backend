@@ -1,11 +1,11 @@
 using Application.DTOs;
 using Application.UseCases.Interfaces;
-using Application.ViewModel;
-using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
 
+[Authorize]
 [Microsoft.AspNetCore.Components.Route("api/[controller]")]
 public class RentalController : MainController
 {

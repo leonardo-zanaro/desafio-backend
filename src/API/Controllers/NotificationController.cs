@@ -1,8 +1,10 @@
 using Application.UseCases.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
 
+[Authorize(Roles = "Admin")]
 [Microsoft.AspNetCore.Components.Route("api/[controller]")]
 public class NotificationController : MainController
 {
@@ -18,7 +20,7 @@ public class NotificationController : MainController
 
     [HttpGet]
     [Route("notification/all")]
-    public IActionResult GetAllNotifications(int pageNumber, int pageQuantity)
+    public IActionResult GetAllNotifications(int? pageNumber = null, int? pageQuantity = null)
     {
         try
         {

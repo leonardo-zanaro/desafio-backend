@@ -2,11 +2,13 @@ using Application.DTOs;
 using Application.UseCases.Interfaces;
 using Application.ViewModel;
 using Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
 
+[Authorize]
 [Microsoft.AspNetCore.Components.Route("api/[controller]")]
 public class DelivererController : MainController
 {

@@ -1,9 +1,11 @@
 using Application.DTOs;
 using Application.UseCases.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
 
+[Authorize]
 [Microsoft.AspNetCore.Components.Route("api/[controller]")]
 public class OrderController : MainController
 {
@@ -17,6 +19,7 @@ public class OrderController : MainController
     
     [HttpPost]
     [Route("order/create")]
+    [Authorize(Roles = "Admin")]
     public IActionResult CreateOrder(decimal price)
     {
         try

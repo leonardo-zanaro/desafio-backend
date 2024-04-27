@@ -1,11 +1,11 @@
 using Application.DTOs;
+using Application.UseCases.Interfaces;
 using Application.ViewModel;
 using Domain.Entities;
-using Domain.Enums;
 using Infra.Repositories.Interfaces;
 using Microsoft.Extensions.Logging;
 
-namespace Application.UseCases.Interfaces;
+namespace Application.UseCases;
 
 public class MotorcycleUseCase : IMotorcycleUseCase
 {
@@ -34,14 +34,12 @@ public class MotorcycleUseCase : IMotorcycleUseCase
                 Model = motorcycle.Model
             };
 
-            if (motorcycle == null)
-                return Result.FailResult("Motorcycle not found.");
-
-            return Result.ObjectResult(dto);
+            _logger.LogInformation($"Motorcycle with the following ID: {motorcycleId} was found");
+            return Result.ObjectResult(dto, "Success when searching for a motorcycle");
         }
         catch (Exception ex)
         {
-            _logger.Log(LogLevel.Error, ex.Message);
+            _logger.LogError( ex.Message);
             return Result.FailResult(ex.Message);
         }
     }
@@ -72,25 +70,37 @@ public class MotorcycleUseCase : IMotorcycleUseCase
                 LicensePlate = motorcycle.LicensePlate
             };
 
-            return Result.ObjectResult(motorcycleDto);
+            _logger.LogInformation("Success when creating a motorcycle");
+            return Result.ObjectResult(motorcycleDto, "Success when creating a motorcycle");
         }
         catch (Exception ex)
         {
-            _logger.Log(LogLevel.Error, ex.Message);
+            _logger.LogError(ex.Message);
             return Result.FailResult(ex.Message);
         }
     }
 
     public IEnumerable<MotorcycleDTO> GetAll(int? page = null, int? pageQuantity = null)
     {
-        var list = _motorcycleRepository.GetAll(page, pageQuantity).Select(motorcycle => new MotorcycleDTO
+        try
         {
-            Id = motorcycle.Id,
-            LicensePlate = motorcycle.LicensePlate,
-            Year = motorcycle.Year,
-            Model = motorcycle.Model
-        });
-        return list;
+            var list = _motorcycleRepository.GetAll(page, pageQuantity).Select(motorcycle => new MotorcycleDTO
+            {
+                Id = motorcycle.Id,
+                LicensePlate = motorcycle.LicensePlate,
+                Year = motorcycle.Year,
+                Model = motorcycle.Model
+            }).ToList();
+            
+            
+            _logger.LogInformation($"Success in bringing {list.Count()} motorcycles");
+            return list;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex.Message);
+            return Enumerable.Empty<MotorcycleDTO>();
+        }
     }
 
     public Result ChangePlate(Guid motorcycleId, string plate)
@@ -112,11 +122,15 @@ public class MotorcycleUseCase : IMotorcycleUseCase
 
             var success =_motorcycleRepository.Update(motorcycle);
 
-            return Result.SuccessResult();
+            if (!success)
+                return Result.FailResult("Failed to update motorcycle");
+
+            _logger.LogInformation($"Success when upgrading motorcycle from plate {motorcycle.LicensePlate} to plate {plate}");
+            return Result.SuccessResult("Successfully updated motorcycle");
         }
         catch (Exception ex)
         {
-            _logger.Log(LogLevel.Error, ex.Message);
+            _logger.LogError(ex.Message);
             return Result.FailResult(ex.Message);
         }
     }
@@ -137,11 +151,12 @@ public class MotorcycleUseCase : IMotorcycleUseCase
                 Model = motorcycle.Model
             };
             
+            _logger.LogInformation($"Motorcycle successfully found");
             return Result.ObjectResult(dto);
         }
         catch (Exception ex)
         {  
-            _logger.Log(LogLevel.Error, ex.Message);
+            _logger.LogError(ex.Message);
             return Result.FailResult(ex.Message);
         }
         
@@ -163,11 +178,12 @@ public class MotorcycleUseCase : IMotorcycleUseCase
                 LicensePlate = motorcycle.LicensePlate
             };
         
+            _logger.LogInformation($"Motorcycle successfully found");
             return Result.ObjectResult(motorcycleDto);
         }
         catch (Exception ex)
         {
-            _logger.Log(LogLevel.Error, ex.Message);
+            _logger.LogError(ex.Message);
             return Result.FailResult(ex.Message);
         }
     }
@@ -177,11 +193,12 @@ public class MotorcycleUseCase : IMotorcycleUseCase
         try
         {
             _motorcycleRepository.Remove(motorcycleId);
-            return Result.SuccessResult();
+            _logger.LogInformation($"Motorcycle with the following id: {motorcycleId} has been removed");
+            return Result.SuccessResult("Success when removing motorcycle");
         }
         catch (Exception ex)
         {
-            _logger.Log(LogLevel.Error, ex.Message);
+            _logger.LogError(ex.Message);
             return Result.FailResult(ex.Message);
         }
     }

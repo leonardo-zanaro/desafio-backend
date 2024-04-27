@@ -1,10 +1,13 @@
 using Application.DTOs;
 using Application.UseCases.Interfaces;
 using Application.ViewModel;
+using Domain.Enums;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
 
+[Authorize(Roles = "Admin")]
 [Microsoft.AspNetCore.Components.Route("api/[controller]")]
 public class MotorcycleController : MainController
 {
