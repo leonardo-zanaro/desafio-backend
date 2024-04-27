@@ -18,7 +18,7 @@ public class RentalPeriodController : MainController
         _rentalPeriodUseCase = rentalPeriodUseCase;
         _logger = logger;
     }
-
+    
     /// <summary>
     /// Retrieves all rental periods.
     /// </summary>

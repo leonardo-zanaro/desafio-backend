@@ -23,6 +23,30 @@ public class DelivererUseCase : IDelivererUseCase
         _logger = logger;
     }
 
+    public IEnumerable<DelivererDTO> GetAll(int? page = null, int? pageQuantity = null)
+    {
+        try
+        {
+            var list = _delivererRepository.GetAll(page, pageQuantity).Select(deliverer => new DelivererDTO
+            {
+                Name = deliverer.Name,
+                DriversLicense = deliverer.DriverLicense,
+                Birthday = deliverer.Birthday,
+                Cnh = deliverer.Cnh,
+                PrimaryDocument = deliverer.PrimaryDocument
+            }).ToList();
+            
+            
+            _logger.LogInformation($"Success in bringing {list.Count()} deliverers");
+            return list;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex.Message);
+            return Enumerable.Empty<DelivererDTO>();
+        }
+    }
+    
     public Result MotorcycleEnabled(Guid delivererId)
     {
         try

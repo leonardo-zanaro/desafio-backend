@@ -27,6 +27,23 @@ public class DelivererController : MainController
     }
 
     /// <summary>
+    /// Retrieves a list of all deliverers in the system.
+    /// </summary>
+    /// <param name="pageNumber">The page number of the results (optional).</param>
+    /// <param name="pageQuantity">The number of results per page (optional).</param>
+    /// <returns>
+    /// The list of deliverers.
+    /// </returns>
+    [HttpGet]
+    [Route("/deliverer")]
+    public IActionResult GetAll(int? pageNumber = null, int? pageQuantity = null)
+    {
+        var list = _delivererUseCase.GetAll(pageNumber, pageQuantity);
+
+        return Ok(list);
+    }
+    
+    /// <summary>
     /// Creates a deliverer in the system.
     /// </summary>
     /// <param name="model">The deliverer data.</param>
@@ -36,7 +53,7 @@ public class DelivererController : MainController
     /// If there is an error during the create operation, the IActionResult will contain a BadRequest result with an error message.
     /// </returns>
     [HttpPost]
-    [Route("deliverer/create")]
+    [Route("/deliverer")]
     public IActionResult CreateDeliverer(DelivererDTO? model)
     {
         try

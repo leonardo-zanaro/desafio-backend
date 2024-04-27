@@ -11,3 +11,13 @@
 # Datasource local storage ignored files
 /dataSources/
 /dataSources.local.xml
+/src/API/bin/*
+/src/API/obj/*
+/src/Application/bin/*
+/src/Application/obj/*
+/src/Domain/bin/*
+/src/Domain/obj/*
+/src/Infra/bin/*
+/src/Infra/obj/*
+/src/Tests/bin/*
+/src/Tests/obj/*
