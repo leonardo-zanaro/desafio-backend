@@ -48,7 +48,7 @@ public class RentalController : MainController
             if (!resultMotorcycle.Success)
                 return BadRequest(resultMotorcycle.Message);
 
-            var motorcycle = resultMotorcycle.Object as MotorcycleDTO;
+            var motorcycle = resultMotorcycle.Object as GetMotorcycleDTO;
 
             if (motorcycle == null || motorcycle.Id == null)
                 return BadRequest("Motorcycle was not found");

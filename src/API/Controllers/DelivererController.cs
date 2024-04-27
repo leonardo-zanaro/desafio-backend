@@ -54,7 +54,7 @@ public class DelivererController : MainController
     /// </returns>
     [HttpPost]
     [Route("/deliverer")]
-    public IActionResult CreateDeliverer(DelivererDTO? model)
+    public IActionResult CreateDeliverer(CreateDelivererDTO? model)
     {
         try
         {

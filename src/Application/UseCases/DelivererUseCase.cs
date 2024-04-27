@@ -23,17 +23,19 @@ public class DelivererUseCase : IDelivererUseCase
         _logger = logger;
     }
 
-    public IEnumerable<DelivererDTO> GetAll(int? page = null, int? pageQuantity = null)
+    public IEnumerable<GetDelivererDTO> GetAll(int? page = null, int? pageQuantity = null)
     {
         try
         {
-            var list = _delivererRepository.GetAll(page, pageQuantity).Select(deliverer => new DelivererDTO
+            var list = _delivererRepository.GetAll(page, pageQuantity).Select(deliverer => new GetDelivererDTO
             {
+                Id = deliverer.Id,
                 Name = deliverer.Name,
                 DriversLicense = deliverer.DriverLicense,
                 Birthday = deliverer.Birthday,
                 Cnh = deliverer.Cnh,
-                PrimaryDocument = deliverer.PrimaryDocument
+                PrimaryDocument = deliverer.PrimaryDocument,
+                DriversLicenseImage = deliverer.DriverLicenseImage
             }).ToList();
             
             
@@ -43,7 +45,7 @@ public class DelivererUseCase : IDelivererUseCase
         catch (Exception ex)
         {
             _logger.LogError(ex.Message);
-            return Enumerable.Empty<DelivererDTO>();
+            return Enumerable.Empty<GetDelivererDTO>();
         }
     }
     
@@ -69,7 +71,7 @@ public class DelivererUseCase : IDelivererUseCase
         }
     }
 
-    public Result CreateDeliverer(DelivererDTO? model, Guid userId)
+    public Result CreateDeliverer(CreateDelivererDTO? model, Guid userId)
     {
         try
         {
@@ -98,8 +100,9 @@ public class DelivererUseCase : IDelivererUseCase
 
             _delivererRepository.Add(deliverer);
 
-            var delivererDto = new DelivererDTO
+            var delivererDto = new GetDelivererDTO
             {
+                Id = deliverer.Id,
                 PrimaryDocument = deliverer.PrimaryDocument,
                 Birthday = deliverer.Birthday,
                 Cnh = deliverer.Cnh,

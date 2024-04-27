@@ -38,17 +38,17 @@ public class MotorcycleUseCaseTests
     [Test]
     public void CreateMotorcycle_ReturnsMotorcycle_WhenSuccessful()
     {
-        var newMotorcycle = new MotorcycleDTO()
+        var newMotorcycle = new CreateMotorcycleDTO
         {
             Model = "Honda CB750",
             Year = "1969",
             LicensePlate = "ABC2345"
         };
 
-        var createdMotorcycle = _useCase.CreateMotorcycle(newMotorcycle).Object as MotorcycleDTO;
+        var createdMotorcycle = _useCase.CreateMotorcycle(newMotorcycle).Object as GetMotorcycleDTO;
 
         Assert.NotNull(createdMotorcycle);
-        var motorcycle = _useCase.GetById(createdMotorcycle.Id.Value).Object as MotorcycleDTO;
+        var motorcycle = _useCase.GetById(createdMotorcycle.Id.Value).Object as GetMotorcycleDTO;
     
         Assert.NotNull(motorcycle);
         Assert.That(motorcycle.Model, Is.EqualTo(newMotorcycle.Model));
@@ -59,7 +59,7 @@ public class MotorcycleUseCaseTests
     [Test]
     public void CreateMotorcycle_ReturnsNull_WhenError()
     {
-        var newMotorcycle = new MotorcycleDTO()
+        var newMotorcycle = new CreateMotorcycleDTO
         {
             Model = "Honda CB750",
             Year = "1969"
@@ -75,7 +75,7 @@ public class MotorcycleUseCaseTests
     {
         var motorcycles =_useCase.GetAll();
         
-        Assert.IsInstanceOf<IEnumerable<MotorcycleDTO>>(motorcycles);
+        Assert.IsInstanceOf<IEnumerable<GetMotorcycleDTO>>(motorcycles);
     }
     
     [Test]

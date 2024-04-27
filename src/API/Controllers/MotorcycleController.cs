@@ -22,7 +22,7 @@ public class MotorcycleController : MainController
     {
         _motorcycleUseCase = motorcycleUseCase;
         _rentalUseCase = rentalUseCase;
-        _logger = _logger;
+        _logger = logger;
     }
 
     /// <summary>
@@ -32,7 +32,7 @@ public class MotorcycleController : MainController
     /// <returns>Returns the Motorcycle object if created successfully</returns>
     [HttpPost]
     [Route("motorcycle/create")]
-    public IActionResult CreateMotorcycle(MotorcycleDTO model)
+    public IActionResult CreateMotorcycle(CreateMotorcycleDTO model)
     {
         try
         {
@@ -77,7 +77,7 @@ public class MotorcycleController : MainController
         if (!resultMotorcycle.Success)
             return BadRequest(resultMotorcycle.Message);
 
-        var motorcycle = resultMotorcycle.Object as MotorcycleDTO;
+        var motorcycle = resultMotorcycle.Object as GetMotorcycleDTO;
         
         return Ok(motorcycle);
     }
@@ -100,7 +100,7 @@ public class MotorcycleController : MainController
             if (!resultMotorcycle.Success)
                 return BadRequest(resultMotorcycle.Message);
 
-            var motorcycle = resultMotorcycle.Object as MotorcycleDTO;
+            var motorcycle = resultMotorcycle.Object as GetMotorcycleDTO;
             
             var resultChangePlate =_motorcycleUseCase.ChangePlate(motorcycle.Id.Value, newPlate);
 

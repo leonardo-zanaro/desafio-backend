@@ -5,8 +5,8 @@ namespace Application.UseCases.Interfaces;
 
 public interface IMotorcycleUseCase
 {
-    Result CreateMotorcycle(MotorcycleDTO model);
-    IEnumerable<MotorcycleDTO> GetAll(int? page = null, int? pageQuantity = null);
+    Result CreateMotorcycle(CreateMotorcycleDTO model);
+    IEnumerable<GetMotorcycleDTO> GetAll(int? page = null, int? pageQuantity = null);
     Result GetById(Guid motorcycleId);
     Result BringAvailable(Guid motorcycleId);
     Result GetByPlate(string plate);

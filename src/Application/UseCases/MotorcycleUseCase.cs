@@ -28,7 +28,7 @@ public class MotorcycleUseCase : IMotorcycleUseCase
             if(motorcycle == null)
                 return Result.FailResult("Motorcycle not found.");
             
-            var dto = new MotorcycleDTO
+            var dto = new GetMotorcycleDTO
             {
                 Id = motorcycle.Id,
                 LicensePlate = motorcycle.LicensePlate,
@@ -46,7 +46,7 @@ public class MotorcycleUseCase : IMotorcycleUseCase
         }
     }
 
-    public Result CreateMotorcycle(MotorcycleDTO model)
+    public Result CreateMotorcycle(CreateMotorcycleDTO model)
     {
         try
         {
@@ -64,7 +64,7 @@ public class MotorcycleUseCase : IMotorcycleUseCase
 
             _motorcycleRepository.Add(motorcycle);
 
-            var motorcycleDto = new MotorcycleDTO()
+            var motorcycleDto = new GetMotorcycleDTO
             {
                 Id = motorcycle.Id,
                 Year = motorcycle.Year,
@@ -82,11 +82,11 @@ public class MotorcycleUseCase : IMotorcycleUseCase
         }
     }
 
-    public IEnumerable<MotorcycleDTO> GetAll(int? page = null, int? pageQuantity = null)
+    public IEnumerable<GetMotorcycleDTO> GetAll(int? page = null, int? pageQuantity = null)
     {
         try
         {
-            var list = _motorcycleRepository.GetAll(page, pageQuantity).Select(motorcycle => new MotorcycleDTO
+            var list = _motorcycleRepository.GetAll(page, pageQuantity).Select(motorcycle => new GetMotorcycleDTO
             {
                 Id = motorcycle.Id,
                 LicensePlate = motorcycle.LicensePlate,
@@ -101,7 +101,7 @@ public class MotorcycleUseCase : IMotorcycleUseCase
         catch (Exception ex)
         {
             _logger.LogError(ex.Message);
-            return Enumerable.Empty<MotorcycleDTO>();
+            return Enumerable.Empty<GetMotorcycleDTO>();
         }
     }
 
@@ -145,7 +145,7 @@ public class MotorcycleUseCase : IMotorcycleUseCase
             if (motorcycle == null)
                 return Result.FailResult("Motorcycle not found.");
             
-            var dto = new MotorcycleDTO
+            var dto = new GetMotorcycleDTO
             {
                 Id = motorcycle.Id,
                 LicensePlate = motorcycle.LicensePlate,
@@ -172,7 +172,7 @@ public class MotorcycleUseCase : IMotorcycleUseCase
             if (motorcycle == null)
                 return Result.FailResult("Motorcycle not found.");
 
-            var motorcycleDto = new MotorcycleDTO()
+            var motorcycleDto = new GetMotorcycleDTO
             {
                 Id = motorcycle.Id,
                 Year = motorcycle.Year,
