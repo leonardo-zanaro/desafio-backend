@@ -1,21 +1,27 @@
 using Domain.Base;
 using Infra.Context;
+using Microsoft.Extensions.Logging;
 
 namespace Infra.Repositories;
 
 public abstract class Repository<T> where T : BaseEntity
 {
-    public readonly DmContext _context;
+    protected readonly DmContext _context;
+    private readonly ILogger<Repository<T>> _logger;
 
-    public Repository(DmContext context)
+    public Repository(DmContext context, ILogger<Repository<T>> logger)
     {
         _context = context;
+        _logger = logger;
     }
 
-    public IEnumerable<T> GetAll()
+    public IEnumerable<T> GetAll(int? page = null, int? pageQuantity = null)
     {
         try
         {
+            if (page.HasValue && pageQuantity.HasValue)
+                return _context.Set<T>().Skip(page.Value * pageQuantity.Value).Take(pageQuantity.Value).Where(x => !x.Excluded);
+            
             return _context.Set<T>().Where(x => !x.Excluded);
         }
         catch (Exception)
@@ -23,7 +29,7 @@ public abstract class Repository<T> where T : BaseEntity
             return Enumerable.Empty<T>();
         }
     } 
-    public T? GetById(Guid id) => _context.Set<T>().FirstOrDefault(x => x.Id == id);
+    public T? GetById(Guid id) => _context.Set<T>().FirstOrDefault(x => !x.Excluded && x.Id == id);
 
     public bool Add(T entity)
     {
@@ -33,8 +39,9 @@ public abstract class Repository<T> where T : BaseEntity
             _context.SaveChanges();
             return true;
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            _logger.Log(LogLevel.Error, ex.Message);
             return false;
         }
     }
@@ -51,8 +58,9 @@ public abstract class Repository<T> where T : BaseEntity
             _context.SaveChanges();
             return true;
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            _logger.Log(LogLevel.Error, ex.Message);
             return false;
         }
     }
@@ -64,8 +72,9 @@ public abstract class Repository<T> where T : BaseEntity
             _context.SaveChanges();
             return true;
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            _logger.Log(LogLevel.Error, ex.Message);
             return false;
         }
     }
@@ -77,8 +86,9 @@ public abstract class Repository<T> where T : BaseEntity
             _context.SaveChanges();
             return true;
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            _logger.Log(LogLevel.Error, ex.Message);
             return false;
         }
     }

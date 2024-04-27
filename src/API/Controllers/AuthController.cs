@@ -12,6 +12,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace API.Controllers;
 
+[Microsoft.AspNetCore.Components.Route("api/[controller]")]
 public class AuthController : MainController
 {
     private readonly IConfiguration _configuration;
@@ -24,18 +25,7 @@ public class AuthController : MainController
         _configuration = configuration;
         _signInManager = signInManager;
     }
-
-    /// <summary>
-    /// Logs a user in.
-    /// </summary>
-    /// <param name="userInfo">The user information.</param>
-    /// <returns>The token generated for the logged-in user.</returns>
-    /// <remarks>
-    /// This method logs a user in using the provided user information. It calls the PasswordSignInAsync
-    /// method of the SignInManager to verify the username and password. If the login is successful,
-    /// it returns a token generated for the logged-in user. Otherwise, it returns a BadRequest response
-    /// with an error message.
-    /// </remarks>
+    
     [HttpPost]
     [Route("user/login")]
     public async Task<ActionResult<UserToken>> Login(UserInfo.Login userInfo)
@@ -59,18 +49,7 @@ public class AuthController : MainController
             return BadRequest();
         }
     }
-
-    /// <summary>
-    /// Creates a new user.
-    /// </summary>
-    /// <param name="model">The user information.</param>
-    /// <returns>The token generated for the new user.</returns>
-    /// <remarks>
-    /// This method creates a new user using the provided user information. It creates a new User instance with
-    /// the provided email and password, sets the user's role to "Common", and attempts to create the user in
-    /// the user manager. If the user creation is successful, it returns a token generated for the new user.
-    /// Otherwise, it returns a BadRequest response with an error message.
-    /// </remarks>
+    
     [HttpPost]
     [Route("user/create")]
     public async Task<ActionResult<UserToken>> CreateUser(UserInfo.Register model)
@@ -99,12 +78,7 @@ public class AuthController : MainController
             return BadRequest("Error registering");
         }
     }
-
-    /// <summary>
-    /// Retrieves the logged-in user.
-    /// </summary>
-    /// <returns>The logged-in user information.</returns>
-    /// <exception cref="BadRequestResult">Thrown when the token has expired.</exception>
+    
     [HttpPost]
     [Authorize]
     [Route("user/logged")]
@@ -124,12 +98,7 @@ public class AuthController : MainController
 
         return Ok(model);
     }
-
-    /// <summary>
-    /// Builds a JWT token for the given user information.
-    /// </summary>
-    /// <param name="userInfo">The user information.</param>
-    /// <returns>The built JWT token.</returns>
+    
     private async Task<UserToken> BuildToken(UserInfo.Login userInfo)
     {
         var user = await _userManager.FindByNameAsync(userInfo.Username);
@@ -160,12 +129,7 @@ public class AuthController : MainController
             Expiration = expiration
         };
     }
-
-    /// <summary>
-    /// Generates claims for a given user.
-    /// </summary>
-    /// <param name="user">The user for whom the claims are generated.</param>
-    /// <returns>A <see cref="ClaimsIdentity"/> object containing the generated claims.</returns>
+    
     private async Task<ClaimsIdentity> GenerateClaims(User user)
     {
         var ci = new ClaimsIdentity();

@@ -5,47 +5,45 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
 
-[Microsoft.AspNetCore.Components.Route("api")]
+[Microsoft.AspNetCore.Components.Route("api/[controller]")]
 public class MotorcycleController : MainController
 {
     private readonly IMotorcycleUseCase _motorcycleUseCase;
     private readonly IRentalUseCase _rentalUseCase;
+    private readonly ILogger<MotorcycleController> _logger;
 
-    public MotorcycleController(IMotorcycleUseCase motorcycleUseCase, IRentalUseCase rentalUseCase)
+    public MotorcycleController(
+        IMotorcycleUseCase motorcycleUseCase,
+        IRentalUseCase rentalUseCase,
+        ILogger<MotorcycleController> logger)
     {
         _motorcycleUseCase = motorcycleUseCase;
         _rentalUseCase = rentalUseCase;
+        _logger = _logger;
     }
-
-    /// <summary>
-    /// Creates a new motorcycle with the specified details.
-    /// </summary>
-    /// <param name="model">The MotorcycleDto object containing the details of the motorcycle.</param>
-    /// <returns>A IActionResult representing the HTTP response. Returns Ok if the motorcycle is successfully created. Returns BadRequest if an error occurs.</returns>
+    
     [HttpPost]
-    [Route("motorcycle/post/create")]
-    public IActionResult CreateMotorcycle(MotorcycleDto model)
+    [Route("motorcycle/create")]
+    public IActionResult CreateMotorcycle(MotorcycleDTO model)
     {
         try
         {
-            var motorcycle = _motorcycleUseCase.CreateMotorcycle(model);
+            var resultCreate = _motorcycleUseCase.CreateMotorcycle(model);
 
-            return Ok("Success when creating a motorcycle");
+            if (!resultCreate.Success)
+                return BadRequest(resultCreate.Message);
+            
+            return Ok(resultCreate.Object);
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            return BadRequest(e.Message);
+            _logger.Log(LogLevel.Error, ex.Message);
+            return BadRequest(ex.Message);
         }
     }
-
-    /// <summary>
-    /// Retrieves all motorcycles.
-    /// </summary>
-    /// <returns>
-    /// An IEnumerable of Motorcycle objects representing all the motorcycles.
-    /// </returns>
+    
     [HttpGet]
-    [Route("motorcycle/get/all")]
+    [Route("motorcycle/all")]
     public IActionResult GetAll()
     {
         var list = _motorcycleUseCase.GetAll();
@@ -53,72 +51,76 @@ public class MotorcycleController : MainController
         return Ok(list);
     }
 
-    /// <summary>
-    /// Retrieves a motorcycle by its license plate.
-    /// </summary>
-    /// <param name="plate">The license plate of the motorcycle.</param>
-    /// <returns>The Motorcycle object representing the motorcycle with the specified license plate. Returns null if no motorcycle is found.</returns>
     [HttpGet]
-    [Route("motorcycle/get/license-plate")]
+    [Route("motorcycle/license-plate")]
     public IActionResult GetByPlate(string plate)
     {
-        var motorcycle = _motorcycleUseCase.GetByPlate(plate);
+        var resultMotorcycle = _motorcycleUseCase.GetByPlate(plate);
 
-        if (motorcycle == null)
-            return BadRequest("License Plate not found.");
+        if (!resultMotorcycle.Success)
+            return BadRequest(resultMotorcycle.Message);
+
+        var motorcycle = resultMotorcycle.Object as MotorcycleDTO;
         
         return Ok(motorcycle);
     }
 
 
-    /// <summary>
-    /// Changes the license plate of a motorcycle identified by its ID.
-    /// </summary>
-    /// <param name="motorcycleId">The ID of the motorcycle to change the license plate for.</param>
-    /// <param name="newPlate">The new license plate value.</param>
-    /// <returns>A IActionResult representing the HTTP response. Returns Ok if the license plate is successfully changed. Returns BadRequest if the motorcycle is not found or an unexpected error occurs.</returns>
     [HttpPut]
-    [Route("motorcycle/put/license-plate")]
+    [Route("motorcycle/update/license-plate")]
     public IActionResult ChangePlate(Guid motorcycleId, string newPlate)
     {
-        var motorcycle = _motorcycleUseCase.GetById(motorcycleId);
+        try
+        {
+            var resultMotorcycle = _motorcycleUseCase.GetById(motorcycleId);
 
-        if (motorcycle == null)
-            return BadRequest("Motorcycle not found");
+            if (!resultMotorcycle.Success)
+                return BadRequest(resultMotorcycle.Message);
 
-        var success =_motorcycleUseCase.ChangePlate(motorcycle.Id, newPlate);
+            var motorcycle = resultMotorcycle.Object as MotorcycleDTO;
+            
+            var resultChangePlate =_motorcycleUseCase.ChangePlate(motorcycle.Id.Value, newPlate);
 
-        if (!success)
-            return BadRequest("An unexpected error has occurred");
+            if (!resultChangePlate.Success)
+                return BadRequest(resultChangePlate.Message);
 
-        return Ok("Updated motorcycle");
+            return Ok("Updated motorcycle");
+        }
+        catch (Exception ex)
+        {
+            _logger.Log(LogLevel.Error, ex.Message);
+            return BadRequest(ex.Message);
+        }
     }
 
 
-    /// <summary>
-    /// Removes a motorcycle with the specified ID.
-    /// </summary>
-    /// <param name="motorcycleId">The ID of the motorcycle to remove.</param>
-    /// <returns>An IActionResult representing the HTTP response. Returns Ok if the motorcycle is successfully removed. Returns BadRequest if an error occurs, such as if the motorcycle is not found or has an active lease.</returns>
     [HttpDelete]
     [Route("motorcycle/remove")]
     public IActionResult RemoveMotorcycle(Guid motorcycleId)
     {
-        var motorcycle = _motorcycleUseCase.GetById(motorcycleId);
+        try
+        {
+            var resultMotorcycle = _motorcycleUseCase.GetById(motorcycleId);
 
-        if (motorcycle == null)
-            return BadRequest("Motorcycle not found");
+            if (!resultMotorcycle.Success)
+                return BadRequest(resultMotorcycle.Message);
 
-        var active =_rentalUseCase.RentActive(motorcycleId);
+            var resultActive =_rentalUseCase.RentActive(motorcycleId);
 
-        if (active)
-            return BadRequest("Motorcycle with active lease");
+            if (!resultActive.Success)
+                return BadRequest(resultActive.Message);
 
-        var removed = _motorcycleUseCase.RemoveMotorcycle(motorcycleId);
+            var removed = _motorcycleUseCase.RemoveMotorcycle(motorcycleId);
 
-        if (removed)
-            return Ok("Motorcycle with active lease");
+            if (removed.Success)
+                return Ok();
 
-        return BadRequest("An unexpected error has occurred");
+            return BadRequest(removed.Message);
+        }
+        catch (Exception ex)
+        {
+            _logger.Log(LogLevel.Error, ex.Message);
+            return BadRequest(ex.Message);
+        }
     }
 }

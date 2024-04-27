@@ -1,8 +1,10 @@
 using System.Text;
+using Application.Service;
 using Application.UseCases.Interfaces;
 using Application.ViewModel;
 using Domain.Entities;
 using Infra.Repositories.Interfaces;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 
@@ -13,15 +15,24 @@ public class OrderUseCase : IOrderUseCase
     private readonly IOrderRepository _orderRepository;
     private readonly IDelivererRepository _delivererRepository;
     private readonly INotificationRepository _notificationRepository;
+    private readonly IRabbitMqService _rabbitMqService;
+    private readonly ILogger<OrderUseCase> _logger;
 
-    public OrderUseCase(IOrderRepository orderRepository, IDelivererRepository delivererRepository, INotificationRepository notificationRepository)
+    public OrderUseCase(
+        IOrderRepository orderRepository,
+        IDelivererRepository delivererRepository,
+        INotificationRepository notificationRepository, 
+        IRabbitMqService rabbitMqService,
+        ILogger<OrderUseCase> logger)
     {
         _orderRepository = orderRepository;
         _delivererRepository = delivererRepository;
         _notificationRepository = notificationRepository;
+        _rabbitMqService = rabbitMqService;
+        _logger = logger;
     }
 
-    public Order? CreateOrder(decimal price)
+    public Result CreateOrder(decimal price)
     {
         try
         {
@@ -34,26 +45,23 @@ public class OrderUseCase : IOrderUseCase
             var success = _orderRepository.Add(order);
 
             var deliverers = _orderRepository.GetAvailableDeliverers();
-            
+
             if (success)
             {
-                var factory = new ConnectionFactory() { HostName = "localhost" };
+                var channel = _rabbitMqService.Connect();
+
+                channel.QueueDeclare(queue: "notification_queue",
+                    durable: false,
+                    exclusive: false,
+                    autoDelete: false,
+                    arguments: null);
                 foreach (var id in deliverers)
                 {
-                    using var connection = factory.CreateConnection();
-                    using var channel = connection.CreateModel();
-                    
-                    channel.QueueDeclare(queue: "notification_queue",
-                        durable: false,
-                        exclusive: false,
-                        autoDelete: false,
-                        arguments: null);
-                        
                     var message = JsonConvert.SerializeObject(
-                        new OrderNotificationMessage() 
-                        { 
+                        new OrderNotificationMessage()
+                        {
                             OrderId = order.Id,
-                            DelivererId = id 
+                            DelivererId = id
                         }
                     );
                     var body = Encoding.UTF8.GetBytes(message);
@@ -65,66 +73,67 @@ public class OrderUseCase : IOrderUseCase
                 }
             }
 
-            return order;
+            return Result.ObjectResult(order);
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            return null;
+            _logger.Log(LogLevel.Error, ex.Message);
+            return Result.FailResult(ex.Message);
         }
     }
 
-    public bool AcceptOrder(Guid orderId, Guid delivererId)
+    public Result AcceptOrder(Guid orderId, Guid delivererId)
     {
         try
         {
             var deliverer = _delivererRepository.GetById(delivererId);
-            
+
             if (deliverer == null)
-                throw new Exception("Deliverer not found.");
+                return Result.FailResult("Deliverer not found.");
 
             var order = _orderRepository.GetById(orderId);
 
             if (order == null)
-                throw new Exception("Order not found.");
+                return Result.FailResult("Order not found.");
 
             var notification = _notificationRepository.GetByOrderId(orderId);
 
             if (!(notification.Any(x => x.DelivererId == delivererId)))
-                throw new Exception("Delivery person has not been notified for this order");
-            
+                return Result.FailResult("Delivery person has not been notified for this order.");
+
             order
                 .SetDelivererId(delivererId);
 
             _orderRepository.Update(order);
 
-            return true;
+            return Result.SuccessResult();
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            return false;
+            _logger.Log(LogLevel.Error, ex.Message);
+            return Result.FailResult(ex.Message);
         }
     }
 
-    public bool DeliverOrder(Guid orderId)
+    public Result DeliverOrder(Guid orderId)
     {
         try
         {
             var order = _orderRepository.GetById(orderId);
             if (order == null)
-            {
-                throw new Exception("Order not found.");
-            }
+                return Result.FailResult("Order not found.");
 
             order
                 .SetDeliveryDate();
-            
-            var success = _orderRepository.Update(order);
 
-            return success;
+            _orderRepository.Update(order);
+
+            return Result.SuccessResult();
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            return false;
+            _logger.Log(LogLevel.Error, ex.Message);
+            return Result.FailResult(ex.Message);
         }
     }
 }

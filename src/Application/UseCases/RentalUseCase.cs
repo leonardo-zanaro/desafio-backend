@@ -1,7 +1,9 @@
 using Application.UseCases.Interfaces;
+using Application.ViewModel;
 using Domain.Entities;
 using Domain.Enums;
 using Infra.Repositories.Interfaces;
+using Microsoft.Extensions.Logging;
 
 namespace Application.UseCases;
 
@@ -10,12 +12,18 @@ public class RentalUseCase : IRentalUseCase
     private readonly IRentalRepository _rentalRepository;
     private readonly IRentalPeriodRepository _rentalPeriodRepository;
     private readonly IMotorcycleRepository _motorcycleRepository;
+    private readonly ILogger<RentalUseCase> _logger;
 
-    public RentalUseCase(IRentalRepository rentalRepository, IRentalPeriodRepository rentalPeriodRepository, IMotorcycleRepository motorcycleRepository)
+    public RentalUseCase(
+        IRentalRepository rentalRepository,
+        IRentalPeriodRepository rentalPeriodRepository,
+        IMotorcycleRepository motorcycleRepository,
+        ILogger<RentalUseCase> logger)
     {
         _rentalRepository = rentalRepository;
         _rentalPeriodRepository = rentalPeriodRepository;
         _motorcycleRepository = motorcycleRepository;
+        _logger = logger;
     }
 
     /// <summary>
@@ -25,19 +33,19 @@ public class RentalUseCase : IRentalUseCase
     /// <param name="motorcycleId">The ID of the motorcycle.</param>
     /// <param name="rentalPeriodId">The ID of the rental period.</param>
     /// <returns>True if the motorcycle was successfully rented, false otherwise.</returns>
-    public bool RentMotorcycle(Guid delivererId, Guid motorcycleId, Guid rentalPeriodId)
+    public Result RentMotorcycle(Guid delivererId, Guid motorcycleId, Guid rentalPeriodId)
     {
         try
         {
             var oldRental = _rentalRepository.RentalByMotorcycleId(motorcycleId);
 
             if (oldRental != null && oldRental.StartDate >= DateTime.Today)
-                return false;
+                return Result.FailResult("Motorcycle is already rented.");
             
             var period = _rentalPeriodRepository.GetById(rentalPeriodId);
 
             if (period == null)
-                throw new Exception("Period not found.");
+                return Result.FailResult("Period not found.");
             
             var periodDays = period.Days + 1;
             var endDate = DateTime.UtcNow.AddDays(periodDays);
@@ -51,12 +59,13 @@ public class RentalUseCase : IRentalUseCase
                 .SetExpectedCompletionDate(endDate);
 
             _rentalRepository.Add(rental);
-            
-            return true;
+
+            return Result.SuccessResult();
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            return false;
+            _logger.Log(LogLevel.Error, ex.Message);
+            return Result.SuccessResult();
         }
     }
 
@@ -65,46 +74,45 @@ public class RentalUseCase : IRentalUseCase
     /// </summary>
     /// <param name="motorcycleId">The ID of the motorcycle to check.</param>
     /// <returns>Returns true if the motorcycle is currently rented, otherwise false.</returns>
-    public bool RentActive(Guid motorcycleId)
+    public Result RentActive(Guid motorcycleId)
     {
         try
         {
             var rental = _rentalRepository.RentalByMotorcycleId(motorcycleId);
 
             if (rental == null)
-                throw new Exception("Rental not found.");
-            
-            return true;
+                return Result.SuccessResult();
+                
+
+            return Result.FailResult("Motorcycle in use.");
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            return false;
+            _logger.Log(LogLevel.Error, ex.Message);
+            return Result.FailResult(ex.Message);
         }
     }
 
-    /// <summary>
-    /// Returns a motorcycle and ends the rental period.
-    /// </summary>
-    /// <param name="motorcycleId">The ID of the motorcycle to be returned.</param>
-    /// <returns>Returns true if the motorcycle was successfully returned and false otherwise.</returns>
-    public bool ReturnMotorcycle(Guid motorcycleId)
+
+    public Result ReturnMotorcycle(Guid motorcycleId)
     {
         try
         {
             var motorcycle = _motorcycleRepository.GetById(motorcycleId);
-            
-            if(motorcycle == null)
-                throw new Exception("Motorcycle not found.");
+
+            if (motorcycle == null)
+                return Result.FailResult("Motorcycle not found.");
             
             var rental = _rentalRepository.RentalByMotorcycleId(motorcycleId);
-            
+
             if (rental == null)
-               throw new Exception("Rental not found.");
+                return Result.FailResult("Rental not found.");
             
             var rentalPeriod = _rentalPeriodRepository.GetById(rental.RentalPeriodId);
-            
+
             if (rentalPeriod == null)
-                return false;
+                return Result.FailResult("Period not found.");
+            
             
             var fine = CalculateFine(rentalPeriod, rental);
 
@@ -118,12 +126,13 @@ public class RentalUseCase : IRentalUseCase
                 .SetStatus(StatusMotorcycle.Avaliable);
 
             _motorcycleRepository.Update(motorcycle);
-            
-            return true;
+
+            return Result.SuccessResult();
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            return false;
+            _logger.Log(LogLevel.Error, ex.Message);
+            return Result.FailResult(ex.Message);
         }
     }
 

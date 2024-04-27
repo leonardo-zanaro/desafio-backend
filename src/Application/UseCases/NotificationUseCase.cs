@@ -1,4 +1,5 @@
 using System.Text;
+using Application.Service;
 using Domain.Entities;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
@@ -8,6 +9,7 @@ using Infra.Repositories.Interfaces;
 using Application.UseCases.Interfaces;
 using Infra.Context;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace Application.UseCases;
 
@@ -15,22 +17,63 @@ public class NotificationUseCase : INotificationUseCase
 {
     private readonly INotificationRepository _notificationRepository;
     private readonly IServiceProvider _serviceProvider;
-    public NotificationUseCase(INotificationRepository notificationRepository, IServiceProvider serviceProvider)
+    private readonly IRabbitMqService _rabbitMqService;
+    private readonly ILogger<NotificationUseCase> _logger;
+    public NotificationUseCase(INotificationRepository notificationRepository, IServiceProvider serviceProvider, IRabbitMqService rabbitMqService, ILogger<NotificationUseCase> logger)
     {
         _notificationRepository = notificationRepository;
         _serviceProvider = serviceProvider;
+        _rabbitMqService = rabbitMqService;
+        _logger = logger;
     }
 
-    public IEnumerable<Notification> GetNotificationByOrder(Guid orderId)
+    public IEnumerable<NotificationDTO> GetAllNotifications(int page, int pageQuantity)
     {
-        return _notificationRepository.GetByOrderId(orderId);
+        try
+        {
+            var notifications = _notificationRepository.GetAll(page, pageQuantity);
+
+            var list = notifications.Select(notify => new NotificationDTO
+            {
+                DelivererId = notify.DelivererId,
+                OrderId = notify.OrderId,
+                Date = notify.Date
+            });
+
+            return list;
+        }
+        catch (Exception ex)
+        {
+            _logger.Log(LogLevel.Error, ex.Message);
+            return Enumerable.Empty<NotificationDTO>();
+        }
+    }
+
+    public IEnumerable<NotificationDTO> GetNotificationByOrder(Guid orderId)
+    {
+        try
+        {
+            var notifications = _notificationRepository.GetByOrderId(orderId);
+            
+            var list = notifications.Select(notify => new NotificationDTO
+            {
+                DelivererId = notify.DelivererId,
+                OrderId = notify.OrderId,
+                Date = notify.Date
+            });
+            
+            return list;
+        }
+        catch (Exception ex)
+        {
+            _logger.Log(LogLevel.Error, ex.Message);
+            return Enumerable.Empty<NotificationDTO>();
+        }
     }
     
-    public async Task ConsumeNotifications()
+    public Task ConsumeNotifications()
     {
-        var factory = new ConnectionFactory { HostName = "localhost" };
-        using var connection = factory.CreateConnection();
-        using var channel = connection.CreateModel();
+        var channel = _rabbitMqService.Connect();
 
         channel.QueueDeclare(queue: "notification_queue",
             durable: false,
@@ -51,22 +94,31 @@ public class NotificationUseCase : INotificationUseCase
                 {
                     using (var scope = _serviceProvider.CreateScope())
                     {
-                        var context = scope.ServiceProvider.GetRequiredService<DmContext>();
-                        var notification = StoreNotification(eventMessage);
-                        context.Notifications.Add(notification);
-                        await context.SaveChangesAsync();
+                        try
+                        {
+                            var context = scope.ServiceProvider.GetRequiredService<DmContext>();
+                            var notification = StoreNotification(eventMessage);
+                            context.Notifications.Add(notification);
+                            await context.SaveChangesAsync();
+                        }
+                        catch (Exception ex)
+                        {
+                            _logger.Log(LogLevel.Error, ex.Message);
+                        }
                     }
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Erro ao processar mensagem: {ex.Message}");
+                _logger.Log(LogLevel.Error, ex.Message);
             }
         };
     
         channel.BasicConsume(queue: "notification_queue", autoAck: true, consumer: consumer);
-
-        await Task.Delay(Timeout.Infinite);
+        channel.Close();
+        channel.Dispose();
+        
+        return Task.CompletedTask;
     }
 
     private Notification StoreNotification(OrderNotificationMessage message)

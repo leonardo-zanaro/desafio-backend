@@ -1,5 +1,6 @@
 using System.Reflection;
 using System.Text;
+using Application.Service;
 using Application.UseCases;
 using Application.UseCases.Interfaces;
 using Domain.Entities;
@@ -70,34 +71,46 @@ builder.Services.AddAuthentication(opt =>
     options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(builder.Configuration["jwt:secretKey"])),
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(builder.Configuration["jwt:secretKey"] ?? string.Empty)),
         ValidateIssuer = false,
         ValidateAudience = false
     };
 });
 
+// Use Cases
+builder.Services.AddScoped<IDelivererUseCase, DelivererUseCase>();
+builder.Services.AddScoped<IMotorcycleUseCase, MotorcycleUseCase>();
+builder.Services.AddScoped<INotificationUseCase, NotificationUseCase>();
+builder.Services.AddScoped<IOrderUseCase, OrderUseCase>();
+builder.Services.AddScoped<IRentalUseCase, RentalUseCase>();
+builder.Services.AddScoped<IRentalPeriodUseCase, RentalPeriodUseCase>();
 
+// Repositories
 builder.Services.AddScoped<IDelivererRepository, DelivererRepository>();
 builder.Services.AddScoped<IMotorcycleRepository, MotorcycleRepository>();
 builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IRentalPeriodRepository, RentalPeriodRepository>();
 builder.Services.AddScoped<IRentalRepository, RentalRepository>();
-builder.Services.AddScoped<IDelivererUseCase, DelivererUseCase>();
-builder.Services.AddScoped<IMotorcycleUseCase, MotorcycleUseCase>();
-builder.Services.AddScoped<INotificationUseCase, NotificationUseCase>();
-builder.Services.AddScoped<IOrderUseCase, OrderUseCase>();
-builder.Services.AddScoped<IRentalUseCase, RentalUseCase>();
+
+//Services
+builder.Services.AddScoped<IRabbitMqService, RabbitMqService>();
 
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
+    app.UseExceptionHandler("/error-development");
+    
     app.UseReDoc(c =>
     {
         c.DocumentTitle = "API Documentation";
         c.SpecUrl = "/swagger/v1/swagger.json";
     });
+}
+else
+{
+    app.UseExceptionHandler("/error");
 }
 
 app.UseSwagger();

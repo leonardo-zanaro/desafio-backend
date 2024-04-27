@@ -1,104 +1,106 @@
 using Application.DTOs;
 using Application.UseCases.Interfaces;
+using Application.ViewModel;
 using Domain.Entities;
 using Domain.Enums;
 using Domain.ValueObjects;
 using Infra.Repositories.Interfaces;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 
 namespace Application.UseCases;
 
 public class DelivererUseCase : IDelivererUseCase
 {
     private readonly IDelivererRepository _delivererRepository;
+    private readonly ILogger<Deliverer> _logger;
 
-    public DelivererUseCase(IDelivererRepository delivererRepository)
+    public DelivererUseCase(IDelivererRepository delivererRepository, ILogger<Deliverer> logger)
     {
         _delivererRepository = delivererRepository;
+        _logger = logger;
     }
 
-    /// <summary>
-    /// Checks if the deliverer is enabled to use a motorcycle.
-    /// </summary>
-    /// <param name="delivererId">The ID of the deliverer.</param>
-    /// <returns>True if the deliverer is enabled to use a motorcycle, false otherwise.</returns>
-    public bool MotorcycleEnabled(Guid delivererId)
+    public Result MotorcycleEnabled(Guid delivererId)
     {
-        var deliverer = _delivererRepository.GetById(delivererId);
+        try
+        {
+            var deliverer = _delivererRepository.GetById(delivererId);
 
-        if (deliverer == null)
-            return false;
-        
-        if (deliverer.DriverLicense == DriversLicense.Motorcycle || deliverer.DriverLicense == DriversLicense.MotorcycleCar)
-            return true;
+            if (deliverer == null)
+                return Result.FailResult("Deliverer not found.");
 
-        return false;
+            if (deliverer.DriverLicense == DriversLicense.Motorcycle ||
+                deliverer.DriverLicense == DriversLicense.MotorcycleCar)
+                return Result.SuccessResult();
+
+            return Result.FailResult("Unlicensed driver");
+        }
+        catch (Exception ex)
+        {
+            _logger.Log(LogLevel.Error, ex.Message);
+            return Result.FailResult(ex.Message);
+        }
     }
 
-    /// <summary>
-    /// Checks if the deliverer is enabled to use a car.
-    /// </summary>
-    /// <param name="delivererId">The ID of the deliverer.</param>
-    /// <returns>True if the deliverer is enabled to use a car, false otherwise.</returns>
-    public bool CarEnabled(Guid delivererId)
+    public Result CreateDeliverer(DelivererDTO? model, Guid userId)
     {
-        var deliverer = _delivererRepository.GetById(delivererId);
+        try
+        {
+            if (model == null)
+                return Result.FailResult("Model invalid.");
+            
+            var existCnh = _delivererRepository.GetByCnh(model.Cnh);
 
-        if (deliverer == null)
-            return false;
-        
-        if (deliverer.DriverLicense == DriversLicense.Car || deliverer.DriverLicense == DriversLicense.MotorcycleCar)
-            return true;
+            if (existCnh != null)
+                return Result.FailResult("Existing driver's license");
 
-        return false;
+            var existCnpj = _delivererRepository.GetByPrimaryDocument(model.PrimaryDocument);
+            
+            if (existCnpj != null)
+                return Result.FailResult("Existing cnpj");
+
+            var deliverer = Deliverer.Create();
+
+            deliverer
+                .SetName(model.Name)
+                .SetCnh(model.Cnh)
+                .SetPrimaryDocument(new CNPJ(model.PrimaryDocument))
+                .SetDriverLicense(model.DriversLicense)
+                .SetBirthday(model.Birthday)
+                .SetUserId(userId);
+
+            _delivererRepository.Add(deliverer);
+
+            var delivererDto = new DelivererDTO
+            {
+                PrimaryDocument = deliverer.PrimaryDocument,
+                Birthday = deliverer.Birthday,
+                Cnh = deliverer.Cnh,
+                Name = deliverer.Name,
+                DriversLicense = deliverer.DriverLicense
+            };
+            
+            return Result.ObjectResult(delivererDto);
+        }
+        catch (Exception ex)
+        {
+            _logger.Log(LogLevel.Error, ex.Message);
+            return Result.FailResult(ex.Message);
+        }
     }
 
-    /// <summary>
-    /// Creates a new deliverer.
-    /// </summary>
-    /// <param name="model">The deliverer DTO.</param>
-    /// <param name="userId">The user ID.</param>
-    /// <returns>The newly created deliverer or null if an error occurred.</returns>
-    public Deliverer? CreateDeliverer(DelivererDto? model, Guid userId)
-    {
-        if (model == null)
-            return null;
-        
-        var exist = _delivererRepository.GetByCnh(model.Cnh) ??
-                      _delivererRepository.GetByPrimaryDocument(model.PrimaryDocument);
-
-        if (exist != null)
-            return null;
-
-        var deliverer = Deliverer.Create();
-
-        deliverer
-            .SetName(model.Name)
-            .SetCnh(model.Cnh)
-            .SetPrimaryDocument(new CNPJ(model.PrimaryDocument))
-            .SetDriverLicense(model.DriversLicense)
-            .SetBirthday(model.Birthday)
-            .SetUserId(userId);
-
-        var success = _delivererRepository.Add(deliverer);
-
-        if(!success)
-            return null;
-
-        return deliverer;
-    }
-
-    public bool UploadDocument(IFormFile file, Guid? delivererId)
+    public Result UploadDocument(IFormFile file, Guid? delivererId)
     {
         try
         {
             if (delivererId == null)
-                throw new ArgumentException("Deliverer not found.");
+                return Result.FailResult("DelivererId invalid.");
             
             var deliverer = _delivererRepository.GetById(delivererId.Value);
 
             if (deliverer == null)
-                throw new ArgumentException("Deliverer not found.");
+                return Result.FailResult("Deliverer not found.");
             
             const string directoryPath = @"C:\documentsImages";
             
@@ -117,11 +119,12 @@ public class DelivererUseCase : IDelivererUseCase
             deliverer.SetDriverLicenseImage(fullPath);
             _delivererRepository.Update(deliverer);
             
-            return true;
+            return Result.SuccessResult();
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            return false;
+            _logger.Log(LogLevel.Error, ex.Message);
+            return Result.FailResult(ex.Message);
         }
     }
 }

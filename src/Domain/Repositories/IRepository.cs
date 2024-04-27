@@ -2,7 +2,7 @@ namespace Infra.Repositories.Interfaces;
 
 public interface IRepository<T> where T : class
 {
-    IEnumerable<T> GetAll();
+    IEnumerable<T> GetAll(int? page = null, int? pageQuantity = null);
     T? GetById(Guid id);
     bool Add(T entity);
     Task<int> AddAsync(T entity);

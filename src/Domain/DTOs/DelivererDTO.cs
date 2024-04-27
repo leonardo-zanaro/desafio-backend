@@ -2,7 +2,7 @@ using Domain.Enums;
 
 namespace Application.DTOs;
 
-public class DelivererDto
+public class DelivererDTO
 {
     public string Name { get; set; }
     public string PrimaryDocument { get; set; }

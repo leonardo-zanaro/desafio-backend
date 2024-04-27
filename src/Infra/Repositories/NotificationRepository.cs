@@ -1,25 +1,35 @@
+using Application.ViewModel;
 using Domain.Entities;
 using Infra.Context;
 using Infra.Repositories.Interfaces;
+using Microsoft.Extensions.Logging;
 
 namespace Infra.Repositories;
 
 public class NotificationRepository : Repository<Notification>, INotificationRepository
 {
-    public NotificationRepository(DmContext context) : base(context)
+    private readonly ILogger<NotificationRepository> _logger;
+    public NotificationRepository(DmContext context, ILogger<NotificationRepository> logger) : base(context, logger)
     {
+        _logger = logger;
     }
 
-    public IEnumerable<Notification> GetByOrderId(Guid orderId)
+    public IEnumerable<NotificationDTO> GetByOrderId(Guid orderId)
     {
         try
         {
-            var list = _context.Notifications.Where(x => !x.Excluded && x.OrderId == orderId);
+            var list = _context.Notifications.Where(x => !x.Excluded && x.OrderId == orderId).Select(notify => new NotificationDTO
+            {
+                DelivererId = notify.DelivererId,
+                OrderId = notify.OrderId,
+                Date = notify.Date
+            });
             return list;
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            return Enumerable.Empty<Notification>();
+            _logger.Log(LogLevel.Error, ex.Message);
+            return Enumerable.Empty<NotificationDTO>();
         }
     }
 }

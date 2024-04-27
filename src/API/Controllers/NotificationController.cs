@@ -7,25 +7,62 @@ namespace API.Controllers;
 public class NotificationController : MainController
 {
     private readonly INotificationUseCase _notificationUseCase;
-    public NotificationController(INotificationUseCase notificationUseCase)
+    private readonly ILogger<NotificationController> _logger;
+    public NotificationController(
+        INotificationUseCase notificationUseCase,
+        ILogger<NotificationController> logger)
     {
         _notificationUseCase = notificationUseCase;
+        _logger = logger;
     }
 
     [HttpGet]
-    [Route("notifications")]
-    public IActionResult GetNotificationByOrder(Guid orderId)
+    [Route("notification/all")]
+    public IActionResult GetAllNotifications(int pageNumber, int pageQuantity)
     {
-        var result = _notificationUseCase.GetNotificationByOrder(orderId);
-        
-        return Ok(result);
+        try
+        {
+            var result = _notificationUseCase.GetAllNotifications(pageNumber, pageQuantity);
+
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.Log(LogLevel.Error, ex.Message);
+            return BadRequest(ex.Message);
+        }
     }
     
     [HttpGet]
-    [Route("consume")]
+    [Route("notification/order")]
+    public IActionResult GetNotificationByOrder(Guid orderId)
+    {
+        try
+        {
+            var result = _notificationUseCase.GetNotificationByOrder(orderId);
+            
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.Log(LogLevel.Error, ex.Message);
+            return BadRequest(ex.Message);
+        }
+    }
+    
+    [HttpGet]
+    [Route("notification/consume")]
     public async Task<IActionResult> ConsumeNotifications()
     {
-        await _notificationUseCase.ConsumeNotifications();
-        return Ok("All notifications have been consumed");
+        try
+        {
+            await _notificationUseCase.ConsumeNotifications();
+            return Ok("All notifications have been consumed");
+        }
+        catch (Exception ex)
+        {
+            _logger.Log(LogLevel.Error, ex.Message);
+            return BadRequest(ex.Message);
+        }
     }
 }

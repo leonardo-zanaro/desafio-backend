@@ -1,9 +1,11 @@
+using Application.ViewModel;
 using Domain.Entities;
 
 namespace Application.UseCases.Interfaces;
 
 public interface INotificationUseCase
 {
-    IEnumerable<Notification> GetNotificationByOrder(Guid orderId);
+    IEnumerable<NotificationDTO> GetAllNotifications(int page, int pageQuantity);
+    IEnumerable<NotificationDTO> GetNotificationByOrder(Guid orderId);
     Task ConsumeNotifications();
 }

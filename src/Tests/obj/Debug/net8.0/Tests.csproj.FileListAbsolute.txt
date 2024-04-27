@@ -136,8 +136,8 @@ C:\Users\leona\RiderProjects\DesafioBackEnd\src\Tests\obj\Debug\net8.0\Tests.pdb
 C:\Users\leona\RiderProjects\DesafioBackEnd\src\Tests\obj\Debug\net8.0\Tests.genruntimeconfig.cache
 C:\Users\leona\RiderProjects\DesafioBackEnd\src\Tests\obj\Debug\net8.0\ref\Tests.dll
 C:\GitKraken\desafio-backend\src\Tests\bin\Debug\net8.0\CoverletSourceRootsMapping_Tests
-C:\GitKraken\desafio-backend\src\Tests\bin\Debug\net8.0\testhost.exe
 C:\GitKraken\desafio-backend\src\Tests\bin\Debug\net8.0\testhost.dll
+C:\GitKraken\desafio-backend\src\Tests\bin\Debug\net8.0\testhost.exe
 C:\GitKraken\desafio-backend\src\Tests\bin\Debug\net8.0\NUnit3.TestAdapter.dll
 C:\GitKraken\desafio-backend\src\Tests\bin\Debug\net8.0\NUnit3.TestAdapter.pdb
 C:\GitKraken\desafio-backend\src\Tests\bin\Debug\net8.0\nunit.engine.dll
@@ -151,6 +151,7 @@ C:\GitKraken\desafio-backend\src\Tests\bin\Debug\net8.0\Tests.pdb
 C:\GitKraken\desafio-backend\src\Tests\bin\Debug\net8.0\Castle.Core.dll
 C:\GitKraken\desafio-backend\src\Tests\bin\Debug\net8.0\Microsoft.AspNetCore.Cryptography.Internal.dll
 C:\GitKraken\desafio-backend\src\Tests\bin\Debug\net8.0\Microsoft.AspNetCore.Cryptography.KeyDerivation.dll
+C:\GitKraken\desafio-backend\src\Tests\bin\Debug\net8.0\Microsoft.AspNetCore.Http.Features.dll
 C:\GitKraken\desafio-backend\src\Tests\bin\Debug\net8.0\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
 C:\GitKraken\desafio-backend\src\Tests\bin\Debug\net8.0\Microsoft.VisualStudio.CodeCoverage.Shim.dll
 C:\GitKraken\desafio-backend\src\Tests\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.dll
@@ -183,6 +184,7 @@ C:\GitKraken\desafio-backend\src\Tests\bin\Debug\net8.0\NuGet.Frameworks.dll
 C:\GitKraken\desafio-backend\src\Tests\bin\Debug\net8.0\nunit.framework.dll
 C:\GitKraken\desafio-backend\src\Tests\bin\Debug\net8.0\RabbitMQ.Client.dll
 C:\GitKraken\desafio-backend\src\Tests\bin\Debug\net8.0\System.Diagnostics.EventLog.dll
+C:\GitKraken\desafio-backend\src\Tests\bin\Debug\net8.0\System.IO.Pipelines.dll
 C:\GitKraken\desafio-backend\src\Tests\bin\Debug\net8.0\cs\Microsoft.TestPlatform.CoreUtilities.resources.dll
 C:\GitKraken\desafio-backend\src\Tests\bin\Debug\net8.0\cs\Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll
 C:\GitKraken\desafio-backend\src\Tests\bin\Debug\net8.0\de\Microsoft.TestPlatform.CoreUtilities.resources.dll
@@ -253,11 +255,6 @@ C:\GitKraken\desafio-backend\src\Tests\bin\Debug\net8.0\runtimes\win\lib\net6.0\
 C:\GitKraken\desafio-backend\src\Tests\bin\Debug\net8.0\Application.dll
 C:\GitKraken\desafio-backend\src\Tests\bin\Debug\net8.0\Domain.dll
 C:\GitKraken\desafio-backend\src\Tests\bin\Debug\net8.0\Infra.dll
-C:\GitKraken\desafio-backend\src\Tests\bin\Debug\net8.0\Microsoft.AspNetCore.Http.Features.dll
-C:\GitKraken\desafio-backend\src\Tests\bin\Debug\net8.0\Microsoft.Net.Http.Headers.dll
-C:\GitKraken\desafio-backend\src\Tests\bin\Debug\net8.0\System.IO.Pipelines.dll
-C:\GitKraken\desafio-backend\src\Tests\bin\Debug\net8.0\Microsoft.AspNetCore.Connections.Abstractions.dll
-C:\GitKraken\desafio-backend\src\Tests\bin\Debug\net8.0\Microsoft.Extensions.Features.dll
 C:\GitKraken\desafio-backend\src\Tests\bin\Debug\net8.0\Application.pdb
 C:\GitKraken\desafio-backend\src\Tests\bin\Debug\net8.0\Domain.pdb
 C:\GitKraken\desafio-backend\src\Tests\bin\Debug\net8.0\Infra.pdb

@@ -19,14 +19,9 @@ public class DelivererController : MainController
         _userManager = userManager;
     }
 
-    /// <summary>
-    /// Creates a new deliverer.
-    /// </summary>
-    /// <param name="model">The deliverer's information.</param>
-    /// <returns>An IActionResult indicating the result of the operation.</returns>
     [HttpPost]
     [Route("deliverer/create")]
-    public IActionResult CreateDeliverer(DelivererDto? model)
+    public IActionResult CreateDeliverer(DelivererDTO? model)
     {
         if (model == null)
             return BadRequest("Need to fill in the information");
@@ -36,22 +31,17 @@ public class DelivererController : MainController
         if (string.IsNullOrWhiteSpace(userId))
             return BadRequest("User not logged in");
 
-        var deliverer = _delivererUseCase.CreateDeliverer(model, Guid.Parse(userId));
+        var resultCreate = _delivererUseCase.CreateDeliverer(model, Guid.Parse(userId));
 
-        if (deliverer == null)
-            return BadRequest("An unexpected error has occurred");
+        if (!resultCreate.Success)
+            return BadRequest(resultCreate.Message);
 
-        return Ok("Success when creating deliverer");
+        return Ok(resultCreate.Object);
     }
 
-    /// <summary>
-    /// Uploads a document for the deliverer.
-    /// </summary>
-    /// <param name="file">The file to be uploaded.</param>
-    /// <returns>An IActionResult indicating the result of the operation.</returns>
     [HttpPost]
-    [Route("deliverer/post/document")]
-    public IActionResult UploadDocument(IFormFile file)
+    [Route("deliverer/document")]
+    public IActionResult UploadDocument(IFormFile file, Guid delivererId)
     {
         var extension = System.IO.Path.GetExtension(file.FileName);
 
@@ -60,12 +50,10 @@ public class DelivererController : MainController
             return BadRequest("Invalid file extension. Only png and bmp files are allowed");
         }
 
-        var delivererId = _userManager.GetUserAsync(User).Result?.Id;
+        var result = _delivererUseCase.UploadDocument(file, delivererId);
 
-        var result = _delivererUseCase.UploadDocument(file, Guid.Parse(delivererId));
-
-        if (!result)
-            return BadRequest("An unexpected error has occurred");
+        if (!result.Success)
+            return BadRequest(result.Message);
         
         return Ok($"File {file.FileName} has been uploaded successfully.");
     }

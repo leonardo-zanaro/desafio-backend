@@ -1,4 +1,5 @@
 using Application.DTOs;
+using Application.ViewModel;
 using Domain.Entities;
 using Microsoft.AspNetCore.Http;
 
@@ -6,8 +7,7 @@ namespace Application.UseCases.Interfaces;
 
 public interface IDelivererUseCase
 {
-    bool MotorcycleEnabled(Guid delivererId);
-    bool CarEnabled(Guid delivererId);
-    Deliverer? CreateDeliverer(DelivererDto? model, Guid userId);
-    bool UploadDocument(IFormFile file, Guid? delivererId);
+    Result MotorcycleEnabled(Guid delivererId);
+    Result CreateDeliverer(DelivererDTO? model, Guid userId);
+    Result UploadDocument(IFormFile file, Guid? delivererId);
 }

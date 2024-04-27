@@ -1,83 +1,86 @@
+using Application.DTOs;
 using Application.UseCases.Interfaces;
 using Application.ViewModel;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
 
+[Microsoft.AspNetCore.Components.Route("api/[controller]")]
 public class RentalController : MainController
 {
     private readonly IRentalUseCase _rentalUseCase;
     private readonly IMotorcycleUseCase _motorcycleUseCase;
     private readonly IDelivererUseCase _delivererUseCase;
-    public RentalController(IRentalUseCase rentalUseCase, IMotorcycleUseCase motorcycleUseCase, IDelivererUseCase delivererUseCase)
+    private readonly ILogger<RentalController> _logger;
+    public RentalController(
+        IRentalUseCase rentalUseCase,
+        IMotorcycleUseCase motorcycleUseCase,
+        IDelivererUseCase delivererUseCase,
+        ILogger<RentalController> logger)
     {
         _rentalUseCase = rentalUseCase;
         _motorcycleUseCase = motorcycleUseCase;
         _delivererUseCase = delivererUseCase;
+        _logger = logger;
     }
 
-
-    /// <summary>
-    /// Rents a motorcycle to a deliverer for a specific rental period.
-    /// </summary>
-    /// <param name="delivererId">The ID of the deliverer who is renting the motorcycle.</param>
-    /// <param name="motorcycleId">The ID of the motorcycle being rented.</param>
-    /// <param name="rentalPeriodId">The ID of the rental period.</param>
-    /// <param name="endDate">The end date of the rental period.</param>
-    /// <returns>Returns an IActionResult indicating the result of the operation.</returns>
     [HttpPost]
-    [Route("rental/rent")]
+    [Route("/rent")]
     public IActionResult RentMotorcycle(Guid delivererId, Guid motorcycleId, Guid rentalPeriodId)
     {
         try
         {
             var enabled = _delivererUseCase.MotorcycleEnabled(delivererId);
+
+            if (!enabled.Success)
+                return BadRequest(enabled.Message);
         
-            if (!enabled)
-                throw new Exception("Unlicensed driver");
-        
-            var motorcycle = _motorcycleUseCase.BringAvailable(motorcycleId);
+            var resultMotorcycle = _motorcycleUseCase.BringAvailable(motorcycleId);
 
-            if (motorcycle == null)
-                throw new Exception("Motorcycle not available");
+            if (!resultMotorcycle.Success)
+                return BadRequest(resultMotorcycle.Message);
 
-            var rental = _rentalUseCase.RentMotorcycle(delivererId, motorcycle.Id, rentalPeriodId);
+            var motorcycle = resultMotorcycle.Object as MotorcycleDTO;
 
-            if (!rental)
-                throw new Exception("An unexpected error has occurred");
+            var rental = _rentalUseCase.RentMotorcycle(delivererId, motorcycle.Id.Value, rentalPeriodId);
+
+            if (!rental.Success)
+                return BadRequest(rental.Message);
 
             return Ok("Rental success");
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            return BadRequest(e.Message);
+            _logger.Log(LogLevel.Error, ex.Message);
+            return BadRequest(ex.Message);
         }
     }
 
-    /// <summary>
-    /// Returns a motorcycle.
-    /// </summary>
-    /// <param name="motorcycleId">The ID of the motorcycle to return.</param>
-    /// <returns>Returns an IActionResult indicating the result of the operation.</returns>
     [HttpPost]
-    [Route("rental/return")]
+    [Route("/return")]
     public IActionResult ReturnMotorcycle(Guid motorcycleId)
     {
         try
         {
-            var motorcycle = _motorcycleUseCase.GetById(motorcycleId);
-            if (motorcycle == null) throw new Exception("Motorcycle not found");
+            var resultMotorcycle = _motorcycleUseCase.GetById(motorcycleId);
+            
+            if (!resultMotorcycle.Success) 
+                return BadRequest(resultMotorcycle.Message);
 
-            var success = _rentalUseCase.RentActive(motorcycleId);
-            if (!success) throw new Exception("An unexpected error has occurred");
+            var resultRent = _rentalUseCase.RentActive(motorcycleId);
+            
+            if (!resultRent.Success) 
+                return BadRequest(resultRent.Message);
 
             _rentalUseCase.ReturnMotorcycle(motorcycleId);
             
             return Ok("Motorcycle returned successfully");
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            return BadRequest(e.Message);
+            _logger.Log(LogLevel.Error, ex.Message);
+            return BadRequest(ex.Message);
         }
     }
 }

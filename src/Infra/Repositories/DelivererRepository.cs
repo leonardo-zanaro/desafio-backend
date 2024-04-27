@@ -2,28 +2,47 @@ using Domain.Entities;
 using Domain.ValueObjects;
 using Infra.Context;
 using Infra.Repositories.Interfaces;
+using Microsoft.Extensions.Logging;
 
 namespace Infra.Repositories;
 
 public class DelivererRepository : Repository<Deliverer>, IDelivererRepository
 {
-    public DelivererRepository(DmContext context) : base(context)
+    private readonly ILogger<DelivererRepository> _logger;
+    public DelivererRepository(DmContext context, ILogger<DelivererRepository> logger) : base(context, logger)
     {
+        _logger = logger;
     }
 
     public Deliverer? GetByPrimaryDocument(string document)
     {
-        var cnpj = new CNPJ(document);
-        
-        var deliverer = _context.Deliverers.FirstOrDefault(x => !x.Excluded && x.PrimaryDocument == cnpj.Value);
+        try
+        {
+            var cnpj = new CNPJ(document);
+            
+            var deliverer = _context.Deliverers.FirstOrDefault(x => !x.Excluded && x.PrimaryDocument == cnpj.Value);
 
-        return deliverer;
+            return deliverer;
+        }
+        catch (Exception ex)
+        {
+            _logger.Log(LogLevel.Error, ex.Message);
+            return null;
+        }
     }
 
     public Deliverer? GetByCnh(string cnh)
     {
-        var deliverer = _context.Deliverers.FirstOrDefault(x => !x.Excluded && x.Cnh == cnh);
+        try
+        {
+            var deliverer = _context.Deliverers.FirstOrDefault(x => !x.Excluded && x.Cnh == cnh);
 
-        return deliverer;
+            return deliverer;
+        }
+        catch (Exception ex)
+        {
+            _logger.Log(LogLevel.Error, ex.Message);
+            return null;
+        }
     }
 }

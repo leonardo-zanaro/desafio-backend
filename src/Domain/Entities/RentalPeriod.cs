@@ -9,6 +9,13 @@ public class RentalPeriod : BaseEntity
     public decimal PercentagePenalty { get; private set; }
 
     #region Setters
+
+    public static RentalPeriod Create()
+    {
+        var period = new RentalPeriod();
+        
+        return period;
+    }
     public RentalPeriod SetDays(int days)
     {
         if (!int.IsPositive(days))

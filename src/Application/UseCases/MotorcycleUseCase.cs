@@ -1,41 +1,59 @@
 using Application.DTOs;
+using Application.ViewModel;
 using Domain.Entities;
 using Domain.Enums;
 using Infra.Repositories.Interfaces;
+using Microsoft.Extensions.Logging;
 
 namespace Application.UseCases.Interfaces;
 
 public class MotorcycleUseCase : IMotorcycleUseCase
 {
     private readonly IMotorcycleRepository _motorcycleRepository;
-    public MotorcycleUseCase(IMotorcycleRepository motorcycleRepository)
+    private readonly ILogger<MotorcycleUseCase> _logger;
+    public MotorcycleUseCase(IMotorcycleRepository motorcycleRepository, ILogger<MotorcycleUseCase> logger)
     {
         _motorcycleRepository = motorcycleRepository;
+        _logger = logger;
     }
     
-    public Motorcycle? GetById(Guid motorcycleId)
+    public Result GetById(Guid motorcycleId)
     {
-        var motorcycle = _motorcycleRepository.GetById(motorcycleId);
+        try
+        {
+            var motorcycle = _motorcycleRepository.GetById(motorcycleId);
 
-        if (motorcycle == null)
-            return null;
+            if(motorcycle == null)
+                return Result.FailResult("Motorcycle not found.");
+            
+            var dto = new MotorcycleDTO
+            {
+                Id = motorcycle.Id,
+                LicensePlate = motorcycle.LicensePlate,
+                Year = motorcycle.Year,
+                Model = motorcycle.Model
+            };
 
-        return motorcycle;
+            if (motorcycle == null)
+                return Result.FailResult("Motorcycle not found.");
+
+            return Result.ObjectResult(dto);
+        }
+        catch (Exception ex)
+        {
+            _logger.Log(LogLevel.Error, ex.Message);
+            return Result.FailResult(ex.Message);
+        }
     }
 
-    /// <summary>
-    /// Creates a new motorcycle.
-    /// </summary>
-    /// <param name="model">The motorcycle data to create.</param>
-    /// <returns>The created motorcycle.</returns>
-    public Motorcycle? CreateMotorcycle(MotorcycleDto model)
+    public Result CreateMotorcycle(MotorcycleDTO model)
     {
         try
         {
             var exist =_motorcycleRepository.GetByPlate(model.LicensePlate);
 
             if (exist != null)
-                throw new Exception("License plate already registered");
+                return Result.FailResult("License plate already registered");
 
             var motorcycle = Motorcycle.Create();
             
@@ -46,80 +64,125 @@ public class MotorcycleUseCase : IMotorcycleUseCase
 
             _motorcycleRepository.Add(motorcycle);
 
-            return motorcycle;
+            var motorcycleDto = new MotorcycleDTO()
+            {
+                Id = motorcycle.Id,
+                Year = motorcycle.Year,
+                Model = motorcycle.Model,
+                LicensePlate = motorcycle.LicensePlate
+            };
+
+            return Result.ObjectResult(motorcycleDto);
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            return null;
+            _logger.Log(LogLevel.Error, ex.Message);
+            return Result.FailResult(ex.Message);
         }
     }
 
-    public IEnumerable<Motorcycle> GetAll()
+    public IEnumerable<MotorcycleDTO> GetAll(int? page = null, int? pageQuantity = null)
     {
-        var list = _motorcycleRepository.GetAll();
+        var list = _motorcycleRepository.GetAll(page, pageQuantity).Select(motorcycle => new MotorcycleDTO
+        {
+            Id = motorcycle.Id,
+            LicensePlate = motorcycle.LicensePlate,
+            Year = motorcycle.Year,
+            Model = motorcycle.Model
+        });
         return list;
     }
 
-    /// <summary>
-    /// Changes the license plate of a motorcycle.
-    /// </summary>
-    /// <param name="motorcycleId">The ID of the motorcycle.</param>
-    /// <param name="plate">The new license plate.</param>
-    /// <returns>True if the license plate was successfully changed, false otherwise.</returns>
-    public bool ChangePlate(Guid motorcycleId, string plate)
+    public Result ChangePlate(Guid motorcycleId, string plate)
     {
         try
         {
             var motorcycle = _motorcycleRepository.GetById(motorcycleId);
 
             if (motorcycle == null)
-                throw new Exception("Motorcycle not found");
+                return Result.FailResult("Motorcycle not found");
 
             var motorcycleByLicensePlate = _motorcycleRepository.GetByPlate(plate);
 
             if (motorcycleByLicensePlate != null)
-                throw new Exception("License plate in use");
+                return Result.FailResult("License plate in use");
                         
             motorcycle
                 .SetLicensePlate(plate);
 
             var success =_motorcycleRepository.Update(motorcycle);
 
-            return success;
+            return Result.SuccessResult();
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            return false;
+            _logger.Log(LogLevel.Error, ex.Message);
+            return Result.FailResult(ex.Message);
         }
     }
-    public Motorcycle? BringAvailable(Guid motorcycleId)
+    public Result BringAvailable(Guid motorcycleId)
     {
-        var list = _motorcycleRepository.BringAvailables(motorcycleId);
-        if (!list.Any())
-            return null;
+        try
+        {
+            var motorcycle = _motorcycleRepository.MotorcycleAvaliable(motorcycleId);
 
-        return list.First();
-    }
-    public Motorcycle? GetByPlate(string plate)
-    {
-        var motorcycle = _motorcycleRepository.GetByPlate(plate);
-
-        if (motorcycle == null)
-            return null;
+            if (motorcycle == null)
+                return Result.FailResult("Motorcycle not found.");
+            
+            var dto = new MotorcycleDTO
+            {
+                Id = motorcycle.Id,
+                LicensePlate = motorcycle.LicensePlate,
+                Year = motorcycle.Year,
+                Model = motorcycle.Model
+            };
+            
+            return Result.ObjectResult(dto);
+        }
+        catch (Exception ex)
+        {  
+            _logger.Log(LogLevel.Error, ex.Message);
+            return Result.FailResult(ex.Message);
+        }
         
-        return motorcycle;
+    }
+    public Result GetByPlate(string plate)
+    {
+        try
+        {
+            var motorcycle = _motorcycleRepository.GetByPlate(plate);
+
+            if (motorcycle == null)
+                return Result.FailResult("Motorcycle not found.");
+
+            var motorcycleDto = new MotorcycleDTO()
+            {
+                Id = motorcycle.Id,
+                Year = motorcycle.Year,
+                Model = motorcycle.Model,
+                LicensePlate = motorcycle.LicensePlate
+            };
+        
+            return Result.ObjectResult(motorcycleDto);
+        }
+        catch (Exception ex)
+        {
+            _logger.Log(LogLevel.Error, ex.Message);
+            return Result.FailResult(ex.Message);
+        }
     }
 
-    public bool RemoveMotorcycle(Guid motorcycleId)
+    public Result RemoveMotorcycle(Guid motorcycleId)
     {
         try
         {
             _motorcycleRepository.Remove(motorcycleId);
-            return true;
+            return Result.SuccessResult();
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            return false;
+            _logger.Log(LogLevel.Error, ex.Message);
+            return Result.FailResult(ex.Message);
         }
     }
 }

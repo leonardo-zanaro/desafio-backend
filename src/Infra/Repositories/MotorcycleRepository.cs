@@ -2,26 +2,29 @@ using Domain.Entities;
 using Domain.Enums;
 using Infra.Context;
 using Infra.Repositories.Interfaces;
+using Microsoft.Extensions.Logging;
 
 namespace Infra.Repositories;
 
 public class MotorcycleRepository : Repository<Motorcycle>, IMotorcycleRepository
 {
-    public MotorcycleRepository(DmContext context) : base(context)
+    private readonly ILogger<MotorcycleRepository> _logger;
+    public MotorcycleRepository(DmContext context, ILogger<MotorcycleRepository> logger) : base(context, logger)
     {
-        
+        _logger = logger;
     }
 
-    public IEnumerable<Motorcycle> BringAvailables(Guid motorcycleId)
+    public Motorcycle? MotorcycleAvaliable(Guid motorcycleId)
     {
         try
         {
-            var list = _context.Motorcycles.Where(x => !x.Excluded && x.Id == motorcycleId && x.Status == StatusMotorcycle.Avaliable);
-            return list;
+            var motorcycle = _context.Motorcycles.FirstOrDefault(x => !x.Excluded && x.Id == motorcycleId && x.Status == StatusMotorcycle.Avaliable);
+            return motorcycle;
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            return Enumerable.Empty<Motorcycle>();
+            _logger.Log(LogLevel.Error,ex.Message);
+            return null;
         }
     }
     public Motorcycle? GetByPlate(string plate)
@@ -31,12 +34,13 @@ public class MotorcycleRepository : Repository<Motorcycle>, IMotorcycleRepositor
             var motorcycle = _context.Motorcycles.FirstOrDefault(x => !x.Excluded && x.LicensePlate == plate);
 
             if (motorcycle == null)
-                throw new Exception("Motorcycle not found");
+                return null;
             
             return motorcycle;
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            _logger.Log(LogLevel.Error,ex.Message);
             return null;
         }
     }

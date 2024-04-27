@@ -5,6 +5,8 @@ using Application.UseCases.Interfaces;
 using Infra.Context;
 using Infra.Repositories;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using ILogger = Castle.Core.Logging.ILogger;
 
 namespace DesafioBackEnd.Tests;
 
@@ -13,10 +15,10 @@ public class MotorcycleUseCaseTests
     private MotorcycleUseCase _useCase;
     private IMotorcycleRepository _motorcycleRepository;
     private DmContext _context;
-    
     [SetUp]
     public void SetUp()
     {
+        
         var options = new DbContextOptionsBuilder<DmContext>()
             .UseInMemoryDatabase("TestDatabase")
             .Options;
@@ -24,8 +26,10 @@ public class MotorcycleUseCaseTests
         _context = new DmContext(options);
         _context.Database.EnsureDeleted();
         _context.Database.EnsureCreated();
-        _motorcycleRepository = new MotorcycleRepository(_context);
-        _useCase = new MotorcycleUseCase(_motorcycleRepository);
+        ILogger<MotorcycleRepository> loggerRepository = new LoggerFactory().CreateLogger<MotorcycleRepository>();
+        _motorcycleRepository = new MotorcycleRepository(_context, loggerRepository);
+        ILogger<MotorcycleUseCase> logger = new LoggerFactory().CreateLogger<MotorcycleUseCase>();
+        _useCase = new MotorcycleUseCase(_motorcycleRepository, logger);
 
         AddRandomMotorcycles();
     }
@@ -33,17 +37,17 @@ public class MotorcycleUseCaseTests
     [Test]
     public void CreateMotorcycle_ReturnsMotorcycle_WhenSuccessful()
     {
-        var newMotorcycle = new MotorcycleDto()
+        var newMotorcycle = new MotorcycleDTO()
         {
             Model = "Honda CB750",
             Year = "1969",
             LicensePlate = "ABC2345"
         };
 
-        var createdMotorcycle = _useCase.CreateMotorcycle(newMotorcycle);
+        var createdMotorcycle = _useCase.CreateMotorcycle(newMotorcycle).Object as MotorcycleDTO;
 
         Assert.NotNull(createdMotorcycle);
-        var motorcycle = _useCase.GetById(createdMotorcycle.Id);
+        var motorcycle = _useCase.GetById(createdMotorcycle.Id.Value).Object as MotorcycleDTO;
     
         Assert.NotNull(motorcycle);
         Assert.That(motorcycle.Model, Is.EqualTo(newMotorcycle.Model));
@@ -54,13 +58,13 @@ public class MotorcycleUseCaseTests
     [Test]
     public void CreateMotorcycle_ReturnsNull_WhenError()
     {
-        var newMotorcycle = new MotorcycleDto()
+        var newMotorcycle = new MotorcycleDTO()
         {
             Model = "Honda CB750",
             Year = "1969"
         };
 
-        var createdMotorcycle = _useCase.CreateMotorcycle(newMotorcycle);
+        var createdMotorcycle = _useCase.CreateMotorcycle(newMotorcycle).Object;
 
         Assert.Null(createdMotorcycle);
     }
@@ -70,7 +74,7 @@ public class MotorcycleUseCaseTests
     {
         var motorcycles =_useCase.GetAll();
         
-        Assert.IsInstanceOf<IEnumerable<Motorcycle>>(motorcycles);
+        Assert.IsInstanceOf<IEnumerable<MotorcycleDTO>>(motorcycles);
     }
     
     [Test]
@@ -78,7 +82,7 @@ public class MotorcycleUseCaseTests
     {
         var licensePlate = "ABC1234";
 
-        var motorcycle = _useCase.GetByPlate(licensePlate);
+        var motorcycle = _useCase.GetByPlate(licensePlate).Object as Motorcycle;
         
         Assert.IsNotNull(motorcycle);
         Assert.That(licensePlate, Is.EqualTo(motorcycle.LicensePlate));
@@ -90,7 +94,7 @@ public class MotorcycleUseCaseTests
     {
         var licensePlate = "XXXYYYZZZ";
 
-        var motorcycle = _useCase.GetByPlate(licensePlate);
+        var motorcycle = _useCase.GetByPlate(licensePlate).Object;
         
         Assert.IsNull(motorcycle);
     }
@@ -102,9 +106,9 @@ public class MotorcycleUseCaseTests
         
         var motorcycle = _useCase.GetAll().First();
 
-        var success =_useCase.ChangePlate(motorcycle.Id, newLicensePlate);
+        var result =_useCase.ChangePlate(motorcycle.Id.Value, newLicensePlate);
         
-        Assert.IsFalse(success);
+        Assert.IsFalse(result.Success);
     }
     
     [Test]
@@ -114,9 +118,9 @@ public class MotorcycleUseCaseTests
         
         var motorcycle = _useCase.GetAll().First();
 
-        var success =_useCase.ChangePlate(motorcycle.Id, newLicensePlate);
+        var result =_useCase.ChangePlate(motorcycle.Id.Value, newLicensePlate);
         
-        Assert.IsTrue(success);
+        Assert.IsTrue(result.Success);
     }
      
     private void AddRandomMotorcycles(int count = 100)

@@ -1,15 +1,16 @@
 using Application.DTOs;
+using Application.ViewModel;
 using Domain.Entities;
 
 namespace Application.UseCases.Interfaces;
 
 public interface IMotorcycleUseCase
 {
-    Motorcycle CreateMotorcycle(MotorcycleDto model);
-    IEnumerable<Motorcycle> GetAll();
-    Motorcycle? GetById(Guid motorcycleId);
-    Motorcycle? BringAvailable(Guid motorcycleId);
-    Motorcycle? GetByPlate(string plate);
-    bool ChangePlate(Guid motorcycleId, string plate);
-    bool RemoveMotorcycle(Guid motorcycleId);
+    Result CreateMotorcycle(MotorcycleDTO model);
+    IEnumerable<MotorcycleDTO> GetAll(int? page = null, int? pageQuantity = null);
+    Result GetById(Guid motorcycleId);
+    Result BringAvailable(Guid motorcycleId);
+    Result GetByPlate(string plate);
+    Result ChangePlate(Guid motorcycleId, string plate);
+    Result RemoveMotorcycle(Guid motorcycleId);
 }
