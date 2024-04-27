@@ -9,7 +9,9 @@ namespace Infra.Repositories;
 public class OrderRepository : Repository<Order>, IOrderRepository
 {
     private readonly ILogger<OrderRepository> _logger;
-    public OrderRepository(DmContext context, ILogger<OrderRepository> logger) : base(context, logger)
+    public OrderRepository(
+        DmContext context,
+        ILogger<OrderRepository> logger) : base(context, logger)
     {
         _logger = logger;
     }

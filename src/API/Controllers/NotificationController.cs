@@ -18,6 +18,15 @@ public class NotificationController : MainController
         _logger = logger;
     }
 
+
+    /// <summary>
+    /// Retrieves all notifications.
+    /// </summary>
+    /// <param name="pageNumber">The page number of the results (optional).</param>
+    /// <param name="pageQuantity">The number of results per page (optional).</param>
+    /// <returns>
+    /// Returns a list of notifications
+    /// </returns>
     [HttpGet]
     [Route("notification/all")]
     public IActionResult GetAllNotifications(int? pageNumber = null, int? pageQuantity = null)
@@ -34,7 +43,14 @@ public class NotificationController : MainController
             return BadRequest(ex.Message);
         }
     }
-    
+
+    /// <summary>
+    /// Retrieves notifications by order.
+    /// </summary>
+    /// <param name="orderId">The ID of the order to retrieve notifications for.</param>
+    /// <returns>
+    /// The collection of notifications.
+    /// </returns>
     [HttpGet]
     [Route("notification/order")]
     public IActionResult GetNotificationByOrder(Guid orderId)
@@ -51,7 +67,13 @@ public class NotificationController : MainController
             return BadRequest(ex.Message);
         }
     }
-    
+
+    /// <summary>
+    /// Consumes notifications.
+    /// </summary>
+    /// <returns>
+    /// Returns an IActionResult.
+    /// </returns>
     [HttpGet]
     [Route("notification/consume")]
     public async Task<IActionResult> ConsumeNotifications()

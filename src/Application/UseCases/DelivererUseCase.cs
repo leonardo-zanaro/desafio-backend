@@ -15,7 +15,9 @@ public class DelivererUseCase : IDelivererUseCase
     private readonly IDelivererRepository _delivererRepository;
     private readonly ILogger<Deliverer> _logger;
 
-    public DelivererUseCase(IDelivererRepository delivererRepository, ILogger<Deliverer> logger)
+    public DelivererUseCase(
+        IDelivererRepository delivererRepository,
+        ILogger<Deliverer> logger)
     {
         _delivererRepository = delivererRepository;
         _logger = logger;

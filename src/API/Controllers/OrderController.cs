@@ -11,12 +11,19 @@ public class OrderController : MainController
 {
     private readonly IOrderUseCase _orderUseCase;
     private readonly ILogger<OrderController> _logger;
-    public OrderController(IOrderUseCase orderUseCase, ILogger<OrderController> logger)
+    public OrderController(
+        IOrderUseCase orderUseCase,
+        ILogger<OrderController> logger)
     {
         _orderUseCase = orderUseCase;
         _logger = logger;
     }
-    
+
+    /// <summary>
+    /// Creates a new order with the specified price.
+    /// </summary>
+    /// <param name="price">The price of the order.</param>
+    /// <returns>Returns an IActionResult representing the result of the operation.</returns>
     [HttpPost]
     [Route("order/create")]
     [Authorize(Roles = "Admin")]
@@ -40,6 +47,12 @@ public class OrderController : MainController
         }
     }
 
+    /// <summary>
+    /// Accepts an order with the specified order and deliverer IDs.
+    /// </summary>
+    /// <param name="orderId">The ID of the order to accept.</param>
+    /// <param name="delivererId">The ID of the deliverer accepting the order.</param>
+    /// <returns>Returns an IActionResult representing the result of the operation.</returns>
     [HttpPost]
     [Route("order/accept")]
     public IActionResult AcceptOrder(Guid orderId, Guid delivererId)
@@ -63,6 +76,12 @@ public class OrderController : MainController
         }
     }
 
+    /// <summary>
+    /// Delivers an order with the specified order and deliverer IDs.
+    /// </summary>
+    /// <param name="orderId">The ID of the order to deliver.</param>
+    /// <param name="delivererId">The ID of the deliverer delivering the order.</param>
+    /// <returns>Returns an IActionResult representing the result of the operation.</returns>
     [HttpPost]
     [Route("order/delivery")]
     public IActionResult OrderDelivery(Guid orderId, Guid delivererId)

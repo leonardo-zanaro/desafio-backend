@@ -9,7 +9,9 @@ namespace Infra.Repositories;
 public class DelivererRepository : Repository<Deliverer>, IDelivererRepository
 {
     private readonly ILogger<DelivererRepository> _logger;
-    public DelivererRepository(DmContext context, ILogger<DelivererRepository> logger) : base(context, logger)
+    public DelivererRepository(
+        DmContext context,
+        ILogger<DelivererRepository> logger) : base(context, logger)
     {
         _logger = logger;
     }

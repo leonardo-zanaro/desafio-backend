@@ -25,6 +25,13 @@ public class RentalController : MainController
         _logger = logger;
     }
 
+    /// <summary>
+    /// Rents a motorcycle for a specific period of time.
+    /// </summary>
+    /// <param name="delivererId">The ID of the deliverer renting the motorcycle.</param>
+    /// <param name="motorcycleId">The ID of the motorcycle to be rented.</param>
+    /// <param name="rentalPeriodId">The ID of the rental period for the motorcycle.</param>
+    /// <returns>If the rental is successful, it will return OK. Otherwise, it will return a bad request status with an error message.</returns>
     [HttpPost]
     [Route("/rent")]
     public IActionResult RentMotorcycle(Guid delivererId, Guid motorcycleId, Guid rentalPeriodId)
@@ -43,6 +50,9 @@ public class RentalController : MainController
 
             var motorcycle = resultMotorcycle.Object as MotorcycleDTO;
 
+            if (motorcycle == null || motorcycle.Id == null)
+                return BadRequest("Motorcycle was not found");
+
             var rental = _rentalUseCase.RentMotorcycle(delivererId, motorcycle.Id.Value, rentalPeriodId);
 
             if (!rental.Success)
@@ -57,6 +67,12 @@ public class RentalController : MainController
         }
     }
 
+
+    /// <summary>
+    /// Returns a rented motorcycle.
+    /// </summary>
+    /// <param name="motorcycleId">The ID of the motorcycle to return.</param>
+    /// <returns>If you are successful in returning the motorcycle, it will return ok.</returns>
     [HttpPost]
     [Route("/return")]
     public IActionResult ReturnMotorcycle(Guid motorcycleId)

@@ -67,4 +67,26 @@ public class RentalPeriodUseCase : IRentalPeriodUseCase
             return Result.FailResult(ex.Message);
         }
     }
+    
+    public IEnumerable<RentalPeriodDTO> GetAll(int? page = null, int? pageQuantity = null)
+    {
+        try
+        {
+            var list = _rentalPeriodRepository.GetAll(page, pageQuantity).Select(period => new RentalPeriodDTO
+            {
+                Days = period.Days,
+                DailyPrice = period.DailyPrice,
+                PercentagePenalty = period.PercentagePenalty
+            }).ToList();
+            
+            
+            _logger.LogInformation($"Success in bringing {list.Count()} periods");
+            return list;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex.Message);
+            return Enumerable.Empty<RentalPeriodDTO>();
+        }
+    }
 }

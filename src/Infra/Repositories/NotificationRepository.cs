@@ -9,7 +9,9 @@ namespace Infra.Repositories;
 public class NotificationRepository : Repository<Notification>, INotificationRepository
 {
     private readonly ILogger<NotificationRepository> _logger;
-    public NotificationRepository(DmContext context, ILogger<NotificationRepository> logger) : base(context, logger)
+    public NotificationRepository(
+        DmContext context,
+        ILogger<NotificationRepository> logger) : base(context, logger)
     {
         _logger = logger;
     }

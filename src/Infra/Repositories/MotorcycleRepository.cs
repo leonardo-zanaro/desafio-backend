@@ -9,7 +9,9 @@ namespace Infra.Repositories;
 public class MotorcycleRepository : Repository<Motorcycle>, IMotorcycleRepository
 {
     private readonly ILogger<MotorcycleRepository> _logger;
-    public MotorcycleRepository(DmContext context, ILogger<MotorcycleRepository> logger) : base(context, logger)
+    public MotorcycleRepository(
+        DmContext context,
+        ILogger<MotorcycleRepository> logger) : base(context, logger)
     {
         _logger = logger;
     }

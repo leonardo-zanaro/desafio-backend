@@ -24,7 +24,12 @@ public class MotorcycleController : MainController
         _rentalUseCase = rentalUseCase;
         _logger = _logger;
     }
-    
+
+    /// <summary>
+    /// Creates a new motorcycle.
+    /// </summary>
+    /// <param name="model">The MotorcycleDTO object containing the details of the motorcycle.</param>
+    /// <returns>Returns the Motorcycle object if created successfully</returns>
     [HttpPost]
     [Route("motorcycle/create")]
     public IActionResult CreateMotorcycle(MotorcycleDTO model)
@@ -40,20 +45,29 @@ public class MotorcycleController : MainController
         }
         catch (Exception ex)
         {
-            _logger.Log(LogLevel.Error, ex.Message);
+            _logger.LogError(ex.Message);
             return BadRequest(ex.Message);
         }
     }
-    
+
+    /// <summary>
+    /// Retrieves all motorcycles.
+    /// </summary>
+    /// <returns>Returns a list of motorcycles</returns>
     [HttpGet]
     [Route("motorcycle/all")]
-    public IActionResult GetAll()
+    public IActionResult GetAll(int? pageNumber = null, int? pageQuantity = null)
     {
-        var list = _motorcycleUseCase.GetAll();
+        var list = _motorcycleUseCase.GetAll(pageNumber, pageQuantity);
 
         return Ok(list);
     }
 
+    /// <summary>
+    /// Retrieves a motorcycle by its license plate.
+    /// </summary>
+    /// <param name="plate">The license plate of the motorcycle to retrieve.</param>
+    /// <returns>The IActionResult representing the result of the operation.</returns>
     [HttpGet]
     [Route("motorcycle/license-plate")]
     public IActionResult GetByPlate(string plate)
@@ -69,6 +83,12 @@ public class MotorcycleController : MainController
     }
 
 
+    /// <summary>
+    /// Changes the license plate of a motorcycle.
+    /// </summary>
+    /// <param name="motorcycleId">The ID of the motorcycle.</param>
+    /// <param name="newPlate">The new license plate.</param>
+    /// <returns>The IActionResult representing the result of the operation.</returns>
     [HttpPut]
     [Route("motorcycle/update/license-plate")]
     public IActionResult ChangePlate(Guid motorcycleId, string newPlate)
@@ -97,6 +117,11 @@ public class MotorcycleController : MainController
     }
 
 
+    /// <summary>
+    /// Removes a motorcycle from the system.
+    /// </summary>
+    /// <param name="motorcycleId">The unique identifier of the motorcycle to be removed.</param>
+    /// <returns>The IActionResult representing the result of the operation.</returns>
     [HttpDelete]
     [Route("motorcycle/remove")]
     public IActionResult RemoveMotorcycle(Guid motorcycleId)

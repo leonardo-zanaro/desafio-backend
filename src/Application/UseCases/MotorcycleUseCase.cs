@@ -11,7 +11,9 @@ public class MotorcycleUseCase : IMotorcycleUseCase
 {
     private readonly IMotorcycleRepository _motorcycleRepository;
     private readonly ILogger<MotorcycleUseCase> _logger;
-    public MotorcycleUseCase(IMotorcycleRepository motorcycleRepository, ILogger<MotorcycleUseCase> logger)
+    public MotorcycleUseCase(
+        IMotorcycleRepository motorcycleRepository,
+        ILogger<MotorcycleUseCase> logger)
     {
         _motorcycleRepository = motorcycleRepository;
         _logger = logger;

@@ -8,7 +8,9 @@ namespace Infra.Repositories;
 public class RentalRepository : Repository<Rental>, IRentalRepository
 {
     private readonly ILogger<RentalRepository> _logger;
-    public RentalRepository(DmContext context, ILogger<RentalRepository> logger) : base(context, logger)
+    public RentalRepository(
+        DmContext context,
+        ILogger<RentalRepository> logger) : base(context, logger)
     {
         _logger = logger;
     }

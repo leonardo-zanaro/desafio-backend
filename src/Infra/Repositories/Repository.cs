@@ -9,7 +9,9 @@ public abstract class Repository<T> where T : BaseEntity
     protected readonly DmContext _context;
     private readonly ILogger<Repository<T>> _logger;
 
-    public Repository(DmContext context, ILogger<Repository<T>> logger)
+    public Repository(
+        DmContext context,
+        ILogger<Repository<T>> logger)
     {
         _context = context;
         _logger = logger;

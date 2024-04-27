@@ -19,7 +19,11 @@ public class NotificationUseCase : INotificationUseCase
     private readonly IServiceProvider _serviceProvider;
     private readonly IRabbitMqService _rabbitMqService;
     private readonly ILogger<NotificationUseCase> _logger;
-    public NotificationUseCase(INotificationRepository notificationRepository, IServiceProvider serviceProvider, IRabbitMqService rabbitMqService, ILogger<NotificationUseCase> logger)
+    public NotificationUseCase(
+        INotificationRepository notificationRepository,
+        IServiceProvider serviceProvider,
+        IRabbitMqService rabbitMqService,
+        ILogger<NotificationUseCase> logger)
     {
         _notificationRepository = notificationRepository;
         _serviceProvider = serviceProvider;
@@ -71,7 +75,7 @@ public class NotificationUseCase : INotificationUseCase
         }
     }
     
-    public Task ConsumeNotifications()
+    public async Task ConsumeNotifications()
     {
         var channel = _rabbitMqService.Connect();
 
@@ -113,10 +117,8 @@ public class NotificationUseCase : INotificationUseCase
         };
     
         channel.BasicConsume(queue: "notification_queue", autoAck: true, consumer: consumer);
-        channel.Close();
-        channel.Dispose();
         
-        return Task.CompletedTask;
+        await Task.Delay(Timeout.Infinite);
     }
 
     private Notification StoreNotification(OrderNotificationMessage message)

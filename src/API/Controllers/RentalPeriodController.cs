@@ -19,6 +19,30 @@ public class RentalPeriodController : MainController
         _logger = logger;
     }
 
+    /// <summary>
+    /// Retrieves all rental periods.
+    /// </summary>
+    /// <param name="pageNumber">The page number of the results (optional).</param>
+    /// <param name="pageQuantity">The number of results per page (optional).</param>
+    /// <returns>
+    /// The list of rental periods.
+    /// </returns>
+    [HttpGet]
+    [Route("/period/all")]
+    public IActionResult GetAll(int? pageNumber = null, int? pageQuantity = null)
+    {
+        var list = _rentalPeriodUseCase.GetAll(pageNumber, pageQuantity);
+
+        return Ok(list);
+    }
+
+    /// <summary>
+    /// Creates a new rental period.
+    /// </summary>
+    /// <param name="model">The rental period model.</param>
+    /// <returns>
+    /// The result of the create operation.
+    /// </returns>
     [HttpPost]
     [Route("/period/create")]
     public IActionResult Create(RentalPeriodDTO model)
@@ -38,7 +62,12 @@ public class RentalPeriodController : MainController
             return BadRequest(ex.Message);
         }
     }
-    
+
+    /// <summary>
+    /// Removes a rental period.
+    /// </summary>
+    /// <param name="rentalPeriodId">The ID of the rental period to remove.</param>
+    /// <returns>The result of the remove operation.</returns>
     [HttpDelete]
     [Route("/period/remove")]
     public IActionResult Remove(Guid rentalPeriodId)
