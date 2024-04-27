@@ -18,10 +18,17 @@ Esta api foi projetada para gerenciar operações relacionadas ao aluguel, entre
   1. Clone este projeto com o seguinte comando:
   
      ```git clone https://github.com/leonardo-zanaro/desafio-backend.git```
-  2. Vá até a pasta onde se localiza o projeto e utilize o terminal para executar o seguinte comando:
+  
+  2. Acesse a pasta do projeto através do seguinte comando no terminal:
+
+     ```cd desafio-backend/src```
+     
+  4. No terminal execute o seguinte comando:
     
      ```docker-compose up -d```
-  3. Com isso realizado basta acessar as URLs correspondentes nas portas configuradas.
+  
+  5. Com isso realizado basta acessar as URLs correspondentes nas portas configuradas.
+
 ## Funcionalidades
 ## Auth
 - ### Login
@@ -40,30 +47,26 @@ Esta api foi projetada para gerenciar operações relacionadas ao aluguel, entre
 - ### Criar Usuário
     `POST` `/user/create`
     
-    Cria um novo usuário do tipo padrão.
+    Cria um novo usuário, caso seja admin necessário colocar a flag `isAdmin` como `true`.
     ```json
     {
       "username": "usuário",
       "password": "senha",
-      "email": "e-mail"
-    }
-    ```
-
-- ### Criar Usuário Administrativo
-  `POST` `/user/create/adm`
-
-  Cria um novo usuário do tipo administrativo.
-    ```json
-    {
-      "username": "usuário",
-      "password": "senha",
-      "email": "e-mail"
+      "email": "e-mail",
+      "isAdmin": true
     }
     ```
 
 ## Deliverer
+- ### Busca Todos Entregadores
+    `GET` `/deliverer`
+
+  Busca todos os entregadores (paginação opcional).
+    - `pageNumber` : número de página (opcional)
+    - `pageQuantity` : quantidade a ser recebida (opcional)
+
 - ### Criar Entregador
-    `POST` `/deliverer/create`
+    `POST` `/deliverer`
 
     Cria um novo entregador.
     ```json
@@ -89,7 +92,7 @@ Esta api foi projetada para gerenciar operações relacionadas ao aluguel, entre
 
 ## Motorcycle
 - ### Criar Moto
-  `POST` `/motorcycle/create`
+  `POST` `/motorcycle`
 
   Cria uma nova motocicleta.
   ```json
@@ -101,9 +104,11 @@ Esta api foi projetada para gerenciar operações relacionadas ao aluguel, entre
   ```
 
 - ### Obter Todas as Motos
-  `GET` `/motorcycle/all`
+  `GET` `/motorcycle`
 
-  Realiza a busca de todas as motos.
+  Realiza a busca de todas as motos (paginação opcional).
+    - `pageNumber` : número de página (opcional)
+    - `pageQuantity` : quantidade a ser recebida (opcional)
 
 - ### Obter Moto pela Placa
   `GET` `/motorcycle/license-plate`
@@ -112,31 +117,28 @@ Esta api foi projetada para gerenciar operações relacionadas ao aluguel, entre
   - `licensePlate`: placa da moto
 
 - ### Alterar a Placa de uma Motocicleta
-  `PUT` `/motorcycle/update/license-plate`
+  `PUT` `/motorcycle/license-plate`
 
   Altera a placa de uma moto, é verificado se a nova placa já está em uso.
-
-  ```json
-  {
-    "newPlate": "nova placa",
-    "motorcycleId": "id da moto"
-  }
-  ```
+    - `newPlate` : nova placa
+    - `motorcycleId` : id da moto
 
 - ### Remover Motocicleta
-  `DELETE` `/motorcycle/remove`
+  `DELETE` `/motorcycle`
 
   Remove uma moto com o ID especificado.
-
-  ```json
-  {
-    "motorcycleId": "id da moto"
-  }
-  ```
+    - `motorcycleId` : id da moto
 
 ## Rental Period
+- ### Busca todos os períodos
+  `GET` `/rentalPeriod`
+
+  Realiza a busca de todos os períodos (paginação opcional). 
+    - `pageNumber` : número de página (opcional)
+    - `pageQuantity` : quantidade a ser recebida (opcional)
+
 - ### Cria um novo período de aluguel
-  `POST` `/rentalPeriod/create`
+  `POST` `/rentalPeriod`
 
   Cria um novo período de aluguel.
   ```json
@@ -147,83 +149,60 @@ Esta api foi projetada para gerenciar operações relacionadas ao aluguel, entre
   }
   ```
 - ### Remover período de aluguel
-  `POST` `/rentalPeriod/remove`
+  `DELETE` `/rentalPeriod`
 
   Remove um período de aluguel.
-  ```json
-  {
-    "rentalPeriod": "id do período"
-  }
-  ```
+    - `rentalPeriodId` : id do período
   
 ## Rental
 - ## Alugar Motocicleta
   `POST` `/rental/rent`
 
   Aluga uma motocicleta para um entregador por um período de aluguel específico.
-  ```json
-  {
-    "delivererId": "id do entregador",
-    "motorcycleId": "id da moto",
-    "rentalPeriodId": "id do período"
-  }
-  ```
+    - `delivererId` : id do entregador
+    - `motorcycleId` : id da moto
+    - `rentalPeriodId` : id do período
 
 - ## Devolver Motocicleta
   `POST` `/rental/return`
   
   Realiza a devolução da moto e faz o cálculo de multa caso necessário.
-  ```json
-  {
-    "motorcycleId": "id da moto"
-  }
-  ```
+    - `motorcycleId` : id da moto
 
 ## Order
 - ### Criar Pedido
   `POST` `/order/create`
 
   Cria um novo pedido com o preço especificado e notifica todos os entregadores.
-
-  ```json
-  {
-    "price": "preço do pedido"
-  }
-  ```
+    - `price` : valor do pedido
 
 - ### Aceitar Pedido
   `POST` `/order/accept`
 
   Aceita um pedido atualizando o status do pedido e atribuindo o ID do entregador.
-
-  ```json
-  {
-    "orderId": "id do pedido",
-    "delivererId": "id do entregador"
-  }
-  ```
+    - `orderId` : id do pedido
+    - `delivererId` : id do entregador
 
 - ### Entregar Pedido
-  `POST` `/order/order-delivery`
+  `POST` `/order/delivery`
 
   Realiza a entrega um pedido atualizando o status do pedido.
-  ```json
-  {
-    "orderId": "id do pedido",
-    "delivererId": "id do entregador"
-  }
-  ```
+  - `orderId` : id do pedido
+  - `delivererId` : id do entregador
 
 ## Notification
+- ### Obter todas as notificações
+  `GET` `/notification`
+
+  Realiza a busca de todas as notificações (paginação opcional).
+    - `pageNumber` : número de página (opcional)
+    - `pageQuantity` : quantidade a ser recebida (opcional)
+ 
 - ### Obter Notificações por Pedido
   `GET` `/notification/order`
 
   Busca todas as notificações por pedido.
-  ```json
-    {
-      "orderId": "id do pedido"
-    }
-  ```
+    - `orderId` : id do pedido
 
 - ### Consumir Todas as Notificações
   `GET` `/notification/consume`
