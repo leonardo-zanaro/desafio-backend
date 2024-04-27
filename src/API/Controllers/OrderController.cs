@@ -25,7 +25,7 @@ public class OrderController : MainController
     /// <param name="price">The price of the order.</param>
     /// <returns>Returns an IActionResult representing the result of the operation.</returns>
     [HttpPost]
-    [Route("order/create")]
+    [Route("/order")]
     [Authorize(Roles = "Admin")]
     public IActionResult CreateOrder(decimal price)
     {

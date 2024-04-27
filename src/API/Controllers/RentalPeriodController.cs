@@ -28,7 +28,7 @@ public class RentalPeriodController : MainController
     /// The list of rental periods.
     /// </returns>
     [HttpGet]
-    [Route("/period/all")]
+    [Route("/period")]
     public IActionResult GetAll(int? pageNumber = null, int? pageQuantity = null)
     {
         var list = _rentalPeriodUseCase.GetAll(pageNumber, pageQuantity);
@@ -44,7 +44,7 @@ public class RentalPeriodController : MainController
     /// The result of the create operation.
     /// </returns>
     [HttpPost]
-    [Route("/period/create")]
+    [Route("/period")]
     public IActionResult Create(RentalPeriodDTO model)
     {
         try
@@ -69,7 +69,7 @@ public class RentalPeriodController : MainController
     /// <param name="rentalPeriodId">The ID of the rental period to remove.</param>
     /// <returns>The result of the remove operation.</returns>
     [HttpDelete]
-    [Route("/period/remove")]
+    [Route("/period")]
     public IActionResult Remove(Guid rentalPeriodId)
     {
         try

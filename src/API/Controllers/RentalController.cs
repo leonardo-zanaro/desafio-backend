@@ -33,7 +33,7 @@ public class RentalController : MainController
     /// <param name="rentalPeriodId">The ID of the rental period for the motorcycle.</param>
     /// <returns>If the rental is successful, it will return OK. Otherwise, it will return a bad request status with an error message.</returns>
     [HttpPost]
-    [Route("/rent")]
+    [Route("/rental/rent")]
     public IActionResult RentMotorcycle(Guid delivererId, Guid motorcycleId, Guid rentalPeriodId)
     {
         try
@@ -74,7 +74,7 @@ public class RentalController : MainController
     /// <param name="motorcycleId">The ID of the motorcycle to return.</param>
     /// <returns>If you are successful in returning the motorcycle, it will return ok.</returns>
     [HttpPost]
-    [Route("/return")]
+    [Route("/rental/return")]
     public IActionResult ReturnMotorcycle(Guid motorcycleId)
     {
         try

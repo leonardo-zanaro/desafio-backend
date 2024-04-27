@@ -28,7 +28,7 @@ public class NotificationController : MainController
     /// Returns a list of notifications
     /// </returns>
     [HttpGet]
-    [Route("notification/all")]
+    [Route("/notification")]
     public IActionResult GetAllNotifications(int? pageNumber = null, int? pageQuantity = null)
     {
         try
@@ -52,7 +52,7 @@ public class NotificationController : MainController
     /// The collection of notifications.
     /// </returns>
     [HttpGet]
-    [Route("notification/order")]
+    [Route("/notification/order")]
     public IActionResult GetNotificationByOrder(Guid orderId)
     {
         try
@@ -75,7 +75,7 @@ public class NotificationController : MainController
     /// Returns an IActionResult.
     /// </returns>
     [HttpGet]
-    [Route("notification/consume")]
+    [Route("/notification/consume")]
     public async Task<IActionResult> ConsumeNotifications()
     {
         try

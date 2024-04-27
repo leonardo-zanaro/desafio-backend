@@ -31,7 +31,7 @@ public class MotorcycleController : MainController
     /// <param name="model">The MotorcycleDTO object containing the details of the motorcycle.</param>
     /// <returns>Returns the Motorcycle object if created successfully</returns>
     [HttpPost]
-    [Route("motorcycle/create")]
+    [Route("/motorcycle")]
     public IActionResult CreateMotorcycle(CreateMotorcycleDTO model)
     {
         try
@@ -55,7 +55,7 @@ public class MotorcycleController : MainController
     /// </summary>
     /// <returns>Returns a list of motorcycles</returns>
     [HttpGet]
-    [Route("motorcycle/all")]
+    [Route("/motorcycle")]
     public IActionResult GetAll(int? pageNumber = null, int? pageQuantity = null)
     {
         var list = _motorcycleUseCase.GetAll(pageNumber, pageQuantity);
@@ -69,7 +69,7 @@ public class MotorcycleController : MainController
     /// <param name="plate">The license plate of the motorcycle to retrieve.</param>
     /// <returns>The IActionResult representing the result of the operation.</returns>
     [HttpGet]
-    [Route("motorcycle/license-plate")]
+    [Route("/motorcycle/license-plate")]
     public IActionResult GetByPlate(string plate)
     {
         var resultMotorcycle = _motorcycleUseCase.GetByPlate(plate);
@@ -90,7 +90,7 @@ public class MotorcycleController : MainController
     /// <param name="newPlate">The new license plate.</param>
     /// <returns>The IActionResult representing the result of the operation.</returns>
     [HttpPut]
-    [Route("motorcycle/update/license-plate")]
+    [Route("/motorcycle/license-plate")]
     public IActionResult ChangePlate(Guid motorcycleId, string newPlate)
     {
         try
@@ -123,7 +123,7 @@ public class MotorcycleController : MainController
     /// <param name="motorcycleId">The unique identifier of the motorcycle to be removed.</param>
     /// <returns>The IActionResult representing the result of the operation.</returns>
     [HttpDelete]
-    [Route("motorcycle/remove")]
+    [Route("/motorcycle")]
     public IActionResult RemoveMotorcycle(Guid motorcycleId)
     {
         try
