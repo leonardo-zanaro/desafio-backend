@@ -83,11 +83,11 @@ public class MotorcycleUseCaseTests
     {
         var licensePlate = "ABC1234";
 
-        var motorcycle = _useCase.GetByPlate(licensePlate).Object as Motorcycle;
+        var motorcycle = _useCase.GetByPlate(licensePlate).Object as GetMotorcycleDTO;
         
         Assert.IsNotNull(motorcycle);
         Assert.That(licensePlate, Is.EqualTo(motorcycle.LicensePlate));
-        Assert.IsInstanceOf<Motorcycle>(motorcycle);
+        Assert.IsInstanceOf<GetMotorcycleDTO>(motorcycle);
     }
     
     [Test]
