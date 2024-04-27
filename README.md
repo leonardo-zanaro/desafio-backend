@@ -20,13 +20,14 @@ Esta api foi projetada para gerenciar operações relacionadas ao aluguel, entre
      ```git clone https://github.com/leonardo-zanaro/desafio-backend.git```
   
   2. Acesse a pasta do projeto através do seguinte comando no terminal:
-      ```cd desafio-backend/src```
+
+     ```cd desafio-backend/src```
      
-  3. No terminal execute o seguinte comando:
+  4. No terminal execute o seguinte comando:
     
      ```docker-compose up -d```
   
-  4. Com isso realizado basta acessar as URLs correspondentes nas portas configuradas.
+  5. Com isso realizado basta acessar as URLs correspondentes nas portas configuradas.
 
 ## Funcionalidades
 ## Auth
