@@ -1,5 +1,7 @@
+using System.Globalization;
 using Application.DTOs;
 using Application.UseCases.Interfaces;
+using Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -89,9 +91,22 @@ public class RentalController : MainController
             if (!resultRent.Success) 
                 return BadRequest(resultRent.Message);
 
-            _rentalUseCase.ReturnMotorcycle(motorcycleId);
-            
-            return Ok("Motorcycle returned successfully");
+            var resultReturn = _rentalUseCase.ReturnMotorcycle(motorcycleId);
+
+            if (resultMotorcycle.Object != null)
+            {
+                var rental = resultReturn.Object as Rental;
+
+                var cultureInfo = new System.Globalization.CultureInfo("pt-BR");
+                var format = string.Format(cultureInfo, "{0:C}", rental?.Fine);
+
+                var result = "Motorcycle returned successfully" + (rental?.Fine > 0 ?  $" and the fine amount was: {format}" : string.Empty); 
+                
+                return Ok(result);
+            }
+
+            return BadRequest(resultReturn.Message);
+
         }
         catch (Exception ex)
         {

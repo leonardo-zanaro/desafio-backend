@@ -115,7 +115,7 @@ public class RentalUseCase : IRentalUseCase
 
             _motorcycleRepository.Update(motorcycle);
 
-            return Result.SuccessResult();
+            return Result.ObjectResult(rental);
         }
         catch (Exception ex)
         {
@@ -127,7 +127,7 @@ public class RentalUseCase : IRentalUseCase
     private decimal CalculateFine(RentalPeriod period, Rental rental)
     {
         var days = period.Days;
-        var calculateDays = (DateTime.Today - rental.StartDate).Days;
+        var calculateDays = ((DateTime.Today.Date < rental.StartDate.Date ? rental.StartDate.Date : DateTime.Today.Date) - rental.StartDate.Date).Days;
         var daysRemaining = days - calculateDays;
 
         decimal result;
