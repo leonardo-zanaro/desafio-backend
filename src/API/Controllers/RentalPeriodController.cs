@@ -45,7 +45,7 @@ public class RentalPeriodController : MainController
     /// </returns>
     [HttpPost]
     [Route("/period")]
-    public IActionResult Create(RentalPeriodDTO model)
+    public IActionResult Create(CreateRentalPeriodDTO model)
     {
         try
         {

@@ -19,7 +19,7 @@ public class RentalPeriodUseCase : IRentalPeriodUseCase
         _logger = logger;
     }
     
-    public Result Create(RentalPeriodDTO model)
+    public Result Create(CreateRentalPeriodDTO model)
     {
         try
         {
@@ -32,8 +32,9 @@ public class RentalPeriodUseCase : IRentalPeriodUseCase
 
             _rentalPeriodRepository.Add(period);
 
-            var periodDto = new RentalPeriodDTO
+            var periodDto = new GetRentalPeriodDTO
             {
+                Id = period.Id,
                 Days = period.Days,
                 DailyPrice = period.DailyPrice,
                 PercentagePenalty = period.PercentagePenalty
@@ -68,12 +69,13 @@ public class RentalPeriodUseCase : IRentalPeriodUseCase
         }
     }
     
-    public IEnumerable<RentalPeriodDTO> GetAll(int? page = null, int? pageQuantity = null)
+    public IEnumerable<GetRentalPeriodDTO> GetAll(int? page = null, int? pageQuantity = null)
     {
         try
         {
-            var list = _rentalPeriodRepository.GetAll(page, pageQuantity).Select(period => new RentalPeriodDTO
+            var list = _rentalPeriodRepository.GetAll(page, pageQuantity).Select(period => new GetRentalPeriodDTO
             {
+                Id = period.Id,
                 Days = period.Days,
                 DailyPrice = period.DailyPrice,
                 PercentagePenalty = period.PercentagePenalty
@@ -86,7 +88,7 @@ public class RentalPeriodUseCase : IRentalPeriodUseCase
         catch (Exception ex)
         {
             _logger.LogError(ex.Message);
-            return Enumerable.Empty<RentalPeriodDTO>();
+            return Enumerable.Empty<GetRentalPeriodDTO>();
         }
     }
 }

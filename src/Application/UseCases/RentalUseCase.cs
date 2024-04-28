@@ -68,11 +68,11 @@ public class RentalUseCase : IRentalUseCase
         {
             var rental = _rentalRepository.RentalByMotorcycleId(motorcycleId);
 
-            if (rental == null)
-                return Result.SuccessResult();
+            if (rental != null)
+                return Result.ObjectResult(rental);
                 
 
-            return Result.FailResult("Motorcycle in use.");
+            return Result.FailResult("Rental not found for this motorcycle.");
         }
         catch (Exception ex)
         {

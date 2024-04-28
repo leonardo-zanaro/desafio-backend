@@ -1,6 +1,7 @@
 using Application.DTOs;
 using Application.UseCases.Interfaces;
 using Application.ViewModel;
+using Domain.Entities;
 using Domain.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -137,6 +138,11 @@ public class MotorcycleController : MainController
 
             if (!resultActive.Success)
                 return BadRequest(resultActive.Message);
+
+            var rental = resultActive.Object as Rental;
+
+            if (rental != null && rental.EndDate == null)
+                return BadRequest("Motorcycle in use.");
 
             var removed = _motorcycleUseCase.RemoveMotorcycle(motorcycleId);
 
